@@ -1,13 +1,6 @@
 
 const state = {
-  imgClass:{
-    width:'774px',
-    height:'400px',
-  }
-};
-
-const getters = {
-
+  name: ''
 };
 
 const mutations = {
@@ -19,8 +12,8 @@ const actions = {
 };
 
 export default {
+  namespaced:true,
   state,
-  getters,
   mutations,
   actions
-};
+}

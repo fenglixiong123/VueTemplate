@@ -3,12 +3,11 @@
     Home
     <br/>
     <button @click="clickHandler">请求</button>
-    <button @click="clickCancle">取消</button>
   </div>
 </template>
 
 <script>
-
+    import service from 'utils/ajax'
     import AThreeSmall from "./tea/AThreeSmall";
     export default {
         name: "Home",
@@ -20,10 +19,16 @@
       },
       methods:{
         clickHandler:function () {
-
-        },
-        clickCancle:function () {
-
+          const url = "https://api.github.com/users";
+          service.get(url).then(
+            res=>{
+              console.log(res);
+            }
+          ).catch(
+            err=>{
+              console.log(err);
+            }
+          );
         }
       },
     }

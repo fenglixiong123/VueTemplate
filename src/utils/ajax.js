@@ -6,76 +6,20 @@
 import Axios from 'axios'
 import store from '../store'
 import router from '../router'
-import {Auth,AuthKey} from './auth'
+import {Auth} from './auth'
 import {Message} from "element-ui";
 
-//token获取锁定
-let tokenLock = false;
+
 //请求列表
 let requestList = [];
 //取消接口请求
 let CancelToken = Axios.CancelToken;
 
-/**
- * @name Token校验
- * @param cancel 中断函数
- * @param callback 回调
- * @description 校验Token是否过期，如果Token过期则根据配置采用不同方法获取新Token
- * 自动获取Token：过期时自动调用获取Token接口。注意：当有任一请求在获取Token时，其余请求将顺延，直至新Token获取完毕
- * 跳转授权Token：过期时中断当前所有请求并跳转到对应页面获取Token。注意：跳转页面授权最佳实现应在授权页面点击触发
- */
-function checkToken(cancel,callback) {
-  if(!Auth.hasToken()){
-    //自动获取token
-    if(Auth.tokenTimeoutMethod === AuthKey.tokenTimeoutNew){
-      //如果当前有请求token
-      if(tokenLock){
-        setTimeout(function () {
-          checkToken(cancel,callback)
-        },500);
-      }else {
-        tokenLock = true;
-        store.dispatch("auth/getNewToken").then(()=>{
-          console.log("已获取新的token");
-          callback();
-          tokenLock = false;
-        }).catch((err)=>{
-          console.log(err)
-        })
-      }
-    }
-    if(Auth.tokenTimeoutMethod === AuthKey.tokenTimeoutJump && Auth.isLogin()){
-      if(router.currentRoute.path!=='/auth'){
-        //无法保证一定会中断所有请求
-        cancel();
-        router.push('/auth');
-      }
-    }
-  }else {
-    callback();
-  }
-}
+
+
 
 /**
- * @name 阻止短时间内重复请求
- * @param url 当前请求地址
- * @param cancel 中断请求
- * @description 每个请求发起前先判断当前请求是否存在于RequestList中，
- *              如果存在则取消该次请求，如果不存在则加入RequestList中，
- *              当请求完成后500ms时，清除RequestList中对应的该请求。
- */
-function stopRepeatRequest(url,cancel) {
-  for (let i=0;i<requestList.length;i++){
-    if(requestList[i]===url){
-      cancel();
-      return;
-    }
-  }
-  requestList.push(url);
-}
-
-/**
- * 超时设置
+ * 超时设置5秒
  */
 const service = Axios.create({
   timeout: 5000
@@ -89,16 +33,18 @@ const service = Axios.create({
  */
 service.interceptors.request.use(
   request =>{
-    console.log("当前访问URL：",request.url);
-    let cancel;
-    request.cancelToken = new CancelToken(function executor(c) {
-      cancel = c;
-    });
-    checkToken(cancel,function () {
+    let currentUrl = request.url;
+    let stopRequest = 0;
+    console.log('request-------->');
+    console.log("currentUrl：",currentUrl);
+    request.cancelToken = new CancelToken(function executor(cancelFunction) {stopRequest = cancelFunction;});
+    Auth.checkToken(stopRequest,function () {
+      console.log('after get token , set login status');
       Auth.setLoginStatus();
-      request.headers.Authorization = `${store.state.user.token}`;
+      console.log('ready to start real request');
+      request.headers['X-Token'] = `${store.state.auth.token}`;
     });
-    stopRepeatRequest(request.url,cancel);
+    stopRepeatRequest(currentUrl,stopRequest);
     return request;
   },
   err =>{
@@ -112,6 +58,7 @@ service.interceptors.request.use(
  */
 service.interceptors.response.use(
   response =>{
+    console.log('response------>');
     for (let i = 0; i < requestList.length; i++) {
       if(requestList[i] === response.config.url){
         setTimeout(function () {
@@ -137,12 +84,38 @@ service.interceptors.response.use(
         default:
           Message({
             message: `服务器错误！错误代码：${error.response.status}`,
-            type: 'error'
+            type: 'error',
+            duration: 5 * 1000
           })
       }
       return Promise.reject(error.response.data);
     }
   }
 );
+
+/**
+ * @name 阻止短时间内重复请求
+ * @param currentUrl 当前请求地址
+ * @param stopRequest 中断请求
+ * @description 每个请求发起前先判断当前请求是否存在于RequestList中，
+ *              如果存在则取消该次请求，如果不存在则加入RequestList中，
+ *              当请求完成后500ms时，清除RequestList中对应的该请求。
+ */
+function stopRepeatRequest(currentUrl,stopRequest) {
+  console.log("check request rate");
+  for (let i=0;i<requestList.length;i++){
+    if(requestList[i] === currentUrl){
+      console.log("request too much，try again later！");
+      stopRequest();
+      Message({
+        message: '请求过于频繁，请稍后再试！',
+        type: 'error'
+      });
+      return;
+    }
+  }
+  console.log('good request rate');
+  requestList.push(currentUrl);
+}
 
 export default service;
