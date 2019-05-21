@@ -1,0 +1,105 @@
+.eyes{
+  position: fixed;
+  top:200px;
+  left:800px;
+  perspective: 1000px;
+}
+.boxType{
+  /*设置3D效果*/
+  transform-style: preserve-3d;
+  /*盒子的大小*/
+  width: 200px;
+  height: 200px;
+  /*background: red;*/
+  animation: sphere 5s linear infinite;
+}
+.side{
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  opacity: 0.5;
+  /*设置过渡*/
+  transition: all 1s ease 0s;
+}
+/*调整位置，制作成一个六边形*/
+.box .div1{
+  background: blue;
+  transform: translateZ(100px);
+}
+.box .div2{
+  background: green;
+  transform: translateZ(-100px);
+}
+.box .div3{
+  background: yellow;
+  transform: rotateX(90deg) translateZ(100px);
+}
+.box .div4{
+  background: green;
+  transform: rotateX(270deg) translateZ(100px);
+}
+.box .div5{
+  background: gray;
+  transform: rotateY(-90deg) translateZ(100px);
+}
+.box .div6{
+  background: brown;
+  transform: rotateY(90deg) translateZ(100px);
+}
+
+/*给正方体添加一个hover效果*/
+.box:hover .div1{
+  transform: translateZ(200px);
+}
+.box:hover .div2{
+  transform: translateZ(-200px);
+}
+.box:hover .div3{
+  transform: rotateX(90deg) translateZ(200px);
+}
+.box:hover .div4{
+  transform: rotateX(270deg) translateZ(200px);
+}
+.box:hover .div5{
+  transform: rotateY(-90deg) translateZ(200px);
+}
+.box:hover .div6{
+  transform: rotateY(90deg) translateZ(200px)
+}
+
+/*添加3D旋转效果 让其绕X、Y轴同时旋转90度*/
+@keyframes sphere{
+  from{
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  to{
+    transform: rotateX(0deg) rotateY(360deg);
+  }
+}
+
+@keyframes sphereX{
+  from{
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  to{
+    transform: rotateX(360deg) rotateY(0deg);
+  }
+}
+
+@keyframes sphereY{
+  from{
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  to{
+    transform: rotateX(0deg) rotateY(360deg);
+  }
+}
+
+@keyframes sphereS{
+  from{
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  to{
+    transform: rotateX(360deg) rotateY(360deg);
+  }
+}
