@@ -33,6 +33,9 @@ const Auth = {
     return Cookies.get(AuthKey.loginKey)
   },
 
+  getToken: function(){
+    return Cookies.get(AuthKey.tokenKey)
+  },
   // 设置Token
   setToken: function(token){
     let maxAge = new Date(new Date().getTime() + 30 * 1000)
@@ -117,6 +120,4 @@ const Auth = {
 
 
 
-export {
-  Auth
-};
+export default Auth
