@@ -12,7 +12,7 @@ let requestList = [];
  *              当请求完成后500ms时，清除RequestList中对应的该请求。
  */
 function addRequest(url,cancel) {
-  console.log(`check request rate:${url}`);
+  console.log(`check rate:${url}`);
   for (let i=0;i<requestList.length;i++){
     if(requestList[i] === url){
       console.log("request too much，try again later！");

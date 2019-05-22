@@ -13,6 +13,17 @@ import {alertErrorMessage} from './message'
 
 //取消接口请求
 let CancelToken = Axios.CancelToken;
+const writeList = ['/getToken','https://api.github.com/users'];
+
+function checkWrite(url) {
+  for (let i = 0; i < writeList.length; i++) {
+    if(writeList.includes(url)){
+      console.log("白名单检验通过：",url);
+      return true;
+    }
+  }
+  return false;
+}
 
 /**
  * 超时设置5秒
@@ -32,16 +43,21 @@ service.interceptors.request.use(
   config =>{
     let currentUrl = config.url;
     let stopRequest = 0;
+    let repeatFlag = true;
+    let isWrite = checkWrite(currentUrl);
     console.log('【request】-------->start',Auth.tokenLock,currentUrl);
+    //这里设置一些排除不拦截的请求
     config.cancelToken = new CancelToken(function executor(cancelFunction) {stopRequest = cancelFunction;});
-    let flag = Auth.checkToken(stopRequest,function () {
-      console.log('after get token , set login status');
-      Auth.setLoginStatus();
-      console.log('ready to start real request');
-      config.headers['X-Token'] = `${store.state.auth.token}`;
-    });
-    if(flag){
-      addRequest(currentUrl,stopRequest);
+    if(!isWrite) {
+      repeatFlag = Auth.checkToken(stopRequest, function () {
+        console.log('after get token , set login status');
+        Auth.setLoginStatus();
+        console.log('ready to start real request');
+        config.headers['X-Token'] = `${store.state.auth.token}`;
+      });
+    }
+    if(repeatFlag) {
+      addRequest(currentUrl, stopRequest);
     }
     console.log('request-------->done',Auth.tokenLock,currentUrl);
     return config;
@@ -61,14 +77,14 @@ service.interceptors.response.use(
   //对响应数据做点什么
   response =>{
     let currentUrl = response.config.url;
-    console.log('@@@response success------>',Auth.tokenLock,currentUrl);
+    console.log(`%c response success------>${currentUrl}`,'background:blue');
     removeRequest(currentUrl);
     return Promise.resolve(response.data);
   },
   //对响应错误做点什么
   error=>{
     let currentUrl = error.response.config.url;
-    console.log('@@@response error------>',Auth.tokenLock,currentUrl);
+    console.log(`%c response error------>${currentUrl}`,'background:blue');
     removeRequest(currentUrl);
     if(Axios.isCancel(error)){
       console.log(error);
