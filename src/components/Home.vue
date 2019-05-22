@@ -22,7 +22,7 @@
           const url = "https://api.github.com/users";
           service.get(url).then(
             res=>{
-              console.log(res);
+              console.log("home result:",res);
             }
           ).catch(
             err=>{

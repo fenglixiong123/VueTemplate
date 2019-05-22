@@ -1,5 +1,5 @@
 import axios from 'utils/ajax'
-import {Auth} from 'utils/auth'
+import Auth from 'utils/auth'
 
 const state = {
   token:'',
@@ -34,8 +34,8 @@ const actions = {
         //resolve将token传给调用函数者
         resolve(res.token);
       }).catch(err=>{
-        console.log("getNewToken failed===================>");
-        reject(err);
+        //如果发生后台错误
+        reject("getNewToken后台服务错误，后台无服务");
       })
     });
   },
