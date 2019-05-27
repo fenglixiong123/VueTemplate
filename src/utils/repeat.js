@@ -1,4 +1,4 @@
-import {Message} from "element-ui";
+import {alertErrorMsg} from './message'
 
 //请求列表
 let requestList = [];
@@ -17,10 +17,7 @@ function addRequest(url,cancel) {
     if(requestList[i] === url){
       console.log("request too much，try again later！");
       cancel(`cancel request : ${url}`);
-      Message({
-        message: `请求过于频繁，请稍后再试！URL:${url}`,
-        type: 'error'
-      });
+      alertErrorMsg(`请求过于频繁，请稍后再试！URL:${url}`);
       return;
     }
   }

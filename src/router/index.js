@@ -1,47 +1,39 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from "../components/Home";
-import Guide from "../components/Guide";
-import Setting from "../components/Setting";
-import Statistic from "../components/Statistic";
+import staticRoute from './staticRoute'
+import {getToken} from '../utils/auth'
+import store from '../store'
 
 Vue.use(Router);
 
-export default new Router({
-  mode:'hash',
+const router = new Router({
+  mode:'history',
   linkActiveClass:'active',
-  routes: [
-    {
-      path:'/',
-      redirect:'/activeHome'
-    },
-    {
-      path:'/activeHome',
-      name:'Home',
-      component:Home
-    },
-    {
-      path:'/login',
-      component:()=>import('../page/login')  //路由懒加载,提高效率
-    },
-    {
-      path:'/activeStatistic',
-      name:'Statistic',
-      component:Statistic
-    },
-    {
-      path:'/activeGuide',
-      name:'Guide',
-      component:Guide
-    },
-    {
-      path:'/systemSet',
-      name:'Setting',
-      component:Setting
-    },
-    {
-      path:'*',
-      redirect: '/404'
+  routes: staticRoute
+});
+
+/**
+ * 钩子函数
+ * 全局钩子来拦截导航
+ */
+router.beforeEach((to,from,next)=>{
+  let token = getToken();
+  console.log(`======>Route will go to : ${to.fullPath},token:${token}`);
+  if(to.meta.auth){
+    if(token && token!=='undefined'){
+      console.log("token有效");
+      next();
+    }else {
+      console.log("token无效");
+      store.dispatch('user/resetToken');
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath }
+      })
     }
-  ]
-})
+  }else{
+    next();
+  }
+});
+
+export default router;
