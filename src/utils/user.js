@@ -10,6 +10,7 @@ function getUser() {
 }
 
 function setUser(user) {
+  if(!user){return;}
   let userStr = JSON.stringify(user);
   window.localStorage.setItem(userInfo,userStr);
 }

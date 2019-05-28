@@ -1,6 +1,7 @@
 import {apiLogin,apiLogout,apiUserInfo} from '../../api/api_auth'
 import { getToken, setToken, removeToken } from '../../utils/auth'
-import {getUser,setUser,removeUser} from '../../utils/info'
+import {getUser,setUser,removeUser} from '../../utils/user'
+import {removePowerList} from '../../utils/power'
 
 /**
  * 这样做原因：
@@ -60,6 +61,7 @@ const actions = {
         commit('setToken', '');
         removeToken();
         removeUser();
+        removePowerList();
         resolve();
       })
     })
@@ -71,6 +73,7 @@ const actions = {
       commit('setToken', '');
       removeToken();
       removeUser();
+      removePowerList();
       resolve()
     })
   },

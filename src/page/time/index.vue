@@ -8,11 +8,14 @@
     <br/>
     <br/>
     {{time}}
+    <hr/>
+    <button @click="findPowerList">获取权限</button>
   </div>
 </template>
 
 <script>
   import openWindow from '@/utils/window'
+  import {apiPowerListByAdminId} from '@/api/api_access'
   import {parseTime,formatTime} from '../../utils/time'
     export default {
       name: "Time",
@@ -32,6 +35,12 @@
         friendlyTime:function () {
           console.log("show time")
           this.time = formatTime(new Date().getTime()-60*60*1000,'{y}/{m}/{d} {h}:{i}:{s}');
+        },
+        findPowerList:function () {
+          console.log("findPowerList")
+          apiPowerListByAdminId(1).then(res=>{
+            console.log(res);
+          }).catch(err=>{console.log(err)})
         }
       }
     }

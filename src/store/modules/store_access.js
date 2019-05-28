@@ -1,58 +1,42 @@
 /**
  * 权限菜单相关
  **/
-import {apiNavList} from '../../api/api_access'
+import {apiPowerListByAdminId} from '../../api/api_access'
+import {getPowerList,setPowerList} from '../../utils/power'
 
 const state = {
-  navList: []
+  powerList: getPowerList(),
 };
 
 const getters = {
-    navList: state => state.navList,
+    powerList: state => state.powerList,
 };
 
 const mutations = {
-  setNavList: (state, data) => {
-    state.navList = data
+  setPowerList: (state, data) => {
+    state.powerList = data
   },
 };
 
 const actions = {
 
-  // 获取该用户的菜单列表
-  getNavigationList({commit}){
+  //获取权限列表
+  getPowerList({commit,state},id){
+    console.log('ready to get permissions !');
     return new Promise((resolve,reject) =>{
-      apiNavList().then((res) => {
-        commit("setNavList", res);
-        resolve(res);
+      apiPowerListByAdminId(id).then(res=>{
+        commit("setPowerList", res.data);
+        setPowerList(res.data);
+        console.log('successful to get permissions !');
+        resolve(res.data);
       },err=>{
         reject(err);
-      })
-    })
-  },
-
-  // 将菜单列表扁平化形成权限列表
-  getPermissionList({state}){
-    return new Promise((resolve) =>{
-      let accessList = [];
-      // 将菜单数据扁平化为一级
-      flatNavList(state.navList,accessList);
-      resolve(accessList)
+      });
     })
   }
 
 
 };
-
-function flatNavList(arr,accessList){
-  for(let v of arr){
-    if(v.child && v.child.length){
-      flatNavList(v.child)
-    } else{
-      accessList.push(v)
-    }
-  }
-}
 
 export default {
   namespaced:true,

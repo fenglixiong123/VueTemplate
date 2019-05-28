@@ -8,6 +8,11 @@ import Guide from "../page/guide";
 import Setting from "../page/setting";
 import Statistic from "../page/statistic";
 
+import Error401 from '../page/error/401'
+import Error403 from '../page/error/403'
+import Error404 from '../page/error/404'
+import Error500 from '../page/error/500'
+
 const staticRoute = [
   {
     path:'/',
@@ -60,8 +65,16 @@ const staticRoute = [
     component:Statistic
   },
   {
+    path:'/401',
+    component: Error401
+  },
+  {
+    path:'/403',
+    component: Error403
+  },
+  {
     path:'*',
-    redirect: '/404'
+    component: Error404
   }
 ];
 
