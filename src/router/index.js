@@ -37,10 +37,10 @@ router.beforeEach((to,from,next)=>{
   //如果是登录状态
   if(token){
     console.log("token有效");
-    //这里开始判断权限
     let isPowered = false;
     console.log("开始权限检测");
 
+    //这里开始判断权限
     if(powerList){
       powerList.forEach(v=>{
         if(v.path === to.path){
