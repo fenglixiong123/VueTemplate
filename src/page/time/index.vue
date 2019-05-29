@@ -10,6 +10,9 @@
     {{time}}
     <hr/>
     <button @click="findPowerList">获取权限</button>
+    <br/>
+    <br/>
+    <p v-for="(power,index) in powerList">[{{index+1}}]——{{power}}</p>
   </div>
 </template>
 
@@ -21,7 +24,8 @@
       name: "Time",
       data(){
         return{
-          time:new Date()
+          time:new Date(),
+          powerList:[]
         }
       },
       methods:{
@@ -40,6 +44,7 @@
           console.log("findPowerList")
           apiPowerListByAdminId(1).then(res=>{
             console.log(res);
+            this.powerList = res.data;
           }).catch(err=>{console.log(err)})
         }
       }
