@@ -20,10 +20,12 @@ const staticRoute = [
   },
   {
     path:'/login',
+    name:'login',
     component: Login
   },
   {
     path:'/home',
+    name:'home',
     component:Home,
     meta:{
       auth:true
@@ -31,6 +33,7 @@ const staticRoute = [
     children:[
       {
         path:'house',
+        name:'house',
         component:House,
         meta:{
           auth:true
@@ -38,6 +41,7 @@ const staticRoute = [
       },
       {
         path: 'time',
+        name:'time',
         component: Time,
         meta: {
           auth: true
@@ -45,6 +49,7 @@ const staticRoute = [
       },
       {
         path: 'admin',
+        name:'admin',
         component: Admin,
         meta: {
           auth: true
@@ -52,10 +57,12 @@ const staticRoute = [
       },
       {
         path:'guide',
+        name:'guide',
         component:Guide
       },
       {
         path:'setting',
+        name:'setting',
         component:Setting
       },
     ]
@@ -66,15 +73,28 @@ const staticRoute = [
   },
   {
     path:'/401',
+    name:'401',
     component: Error401
   },
   {
     path:'/403',
+    name:'403',
     component: Error403
   },
   {
-    path:'*',
+    path:'/404',
+    name:'404',
     component: Error404
+  },
+  {
+    path:'/500',
+    name:'500',
+    component: Error500
+  },
+  {
+    path:'/*',
+    name:'NotFound',
+    redirect: '/404'
   }
 ];
 
