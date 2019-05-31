@@ -6,7 +6,7 @@ import {alertErrorMsg} from '../utils/message'
 import store from '../store'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import {getPowerList} from '../utils/power'
+import {getMenuList} from '../utils/menu'
 
 Vue.use(Router);
 
@@ -17,7 +17,7 @@ const router = new Router({
 });
 
 
-let powerList = getPowerList();
+let menuList = getMenuList();
 
 /**
  * 钩子函数
@@ -41,8 +41,8 @@ router.beforeEach((to,from,next)=>{
     console.log("开始权限检测");
 
     //这里开始判断权限
-    if(powerList){
-      powerList.forEach(v=>{
+    if(menuList){
+      menuList.forEach(v=>{
         if(v.path === to.path){
           isPowered = true;
         }

@@ -50,17 +50,15 @@
           }
           this.$store.dispatch('auth/login', this.loginForm)
             .then((res) => {
-              console.log(res);
               this.$message.success("恭喜你，登录成功！");
-              console.log("login success");
+              console.log("login success",res.code);
               console.log("获取用户信息...");
               this.$store.dispatch('auth/getInfo');
               console.log("获取权限信息...");
-              this.$store.dispatch('access/getPowerList',1).then(res=>{
-                console.log("跳转主页")
-                this.$router.push("/home/house");
+              this.$store.dispatch('menu/getMenuList',1).then(res=>{
+                console.log("跳转主页");
+                this.$router.push("home/house");
               });
-              // this.$router.push("/home/house");
             })
             .catch((err) => {
               console.log("登录请求出错：",err)

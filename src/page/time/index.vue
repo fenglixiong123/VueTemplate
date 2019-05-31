@@ -9,23 +9,25 @@
     <br/>
     {{time}}
     <hr/>
+    <button @click="findMenuList">获取菜单</button>
     <button @click="findPowerList">获取权限</button>
     <br/>
     <br/>
-    <p v-for="(power,index) in powerList">[{{index+1}}]——{{power}}</p>
+    <p v-for="(item,index) in lists">[{{index+1}}]——{{item}}</p>
   </div>
 </template>
 
 <script>
   import openWindow from '@/utils/window'
-  import {apiPowerListByAdminId} from '@/api/api_access'
+  import {apiMenuListByAdminId} from '@/api/api_menu'
+  import {apiPowerListByAdminId} from '@/api/api_power'
   import {parseTime,formatTime} from '../../utils/time'
     export default {
       name: "Time",
       data(){
         return{
           time:new Date(),
-          powerList:[]
+          lists:[],
         }
       },
       methods:{
@@ -40,11 +42,16 @@
           console.log("show time")
           this.time = formatTime(new Date().getTime()-60*60*1000,'{y}/{m}/{d} {h}:{i}:{s}');
         },
+        findMenuList:function () {
+          console.log("findMenuList");
+          apiMenuListByAdminId(1).then(res=>{
+            this.lists = res.data;
+          }).catch(err=>{console.log(err)})
+        },
         findPowerList:function () {
-          console.log("findPowerList")
+          console.log("findPowerList");
           apiPowerListByAdminId(1).then(res=>{
-            console.log(res);
-            this.powerList = res.data;
+            this.lists = res.data;
           }).catch(err=>{console.log(err)})
         }
       }

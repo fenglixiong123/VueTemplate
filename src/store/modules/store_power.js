@@ -1,7 +1,7 @@
 /**
  * 权限菜单相关
  **/
-import {apiPowerListByAdminId} from '../../api/api_access'
+import {apiPowerListByAdminId} from '../../api/api_power'
 import {getPowerList,setPowerList} from '../../utils/power'
 
 const state = {
@@ -9,10 +9,11 @@ const state = {
 };
 
 const getters = {
-    powerList: state => state.powerList,
+  powerList: state => state.powerList,
 };
 
 const mutations = {
+
   setPowerList: (state, data) => {
     state.powerList = data
   },

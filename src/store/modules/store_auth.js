@@ -1,6 +1,7 @@
 import {apiLogin,apiLogout,apiUserInfo} from '../../api/api_auth'
 import { getToken, setToken, removeToken } from '../../utils/auth'
 import {getUser,setUser,removeUser} from '../../utils/user'
+import {removeMenuList} from '../../utils/menu'
 import {removePowerList} from '../../utils/power'
 
 /**
@@ -61,6 +62,7 @@ const actions = {
         commit('setToken', '');
         removeToken();
         removeUser();
+        removeMenuList();
         removePowerList();
         resolve();
       })

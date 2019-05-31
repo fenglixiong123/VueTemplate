@@ -47,7 +47,7 @@ service.interceptors.response.use(
       case 4001:
         alertErrorMsg(res.msg);
         //将跳转的路由path作为参数，登录成功后跳转到该路由
-        this.$route.replace({
+        router.replace({
           path: 'login',
           query: { redirect: router.currentRoute.fullPath }
         });
