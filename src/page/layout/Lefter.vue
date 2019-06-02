@@ -6,7 +6,7 @@
              background-color="#545c64"
              text-color="#fff"
              active-text-color="#ffd04b">
-      <LefterItem v-for="(item,index) in menuTree" :item="item" :itemIndex="String(index)" :key="index"></LefterItem>
+      <LefterItem v-for="(item,index) in menuTree" :item="item" :navIndex="String(index)" :key="index"></LefterItem>
     </el-menu>
   </div>
 </template>
