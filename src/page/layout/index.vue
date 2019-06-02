@@ -1,13 +1,29 @@
 <template>
   <div>
-    <header/>
-    <lefter/>
-    <div>
-      <keep-alive>
-        <router-view></router-view>
-      </keep-alive>
-    </div>
-    <Footer/>
+    <el-container>
+      <el-header>
+        <!--头部导航-->
+        <Header/>
+      </el-header>
+      <!--左侧导航-->
+      <el-container>
+        <el-aside width="300px">
+          <Lefter/>
+        </el-aside>
+        <el-main>
+          <!--中间内容-->
+          <div class="sys-content">
+            <keep-alive>
+              <router-view></router-view>
+            </keep-alive>
+          </div>
+        </el-main>
+      </el-container>
+      <el-footer>
+        <!--底部导航-->
+        <Footer/>
+      </el-footer>
+    </el-container>
   </div>
 </template>
 
@@ -22,5 +38,7 @@
 </script>
 
 <style scoped>
+.sys-content{
 
+}
 </style>

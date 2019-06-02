@@ -1,7 +1,6 @@
 <template>
     <div>
      <lay-out/>
-
     </div>
 </template>
 

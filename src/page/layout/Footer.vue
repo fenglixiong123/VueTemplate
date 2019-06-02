@@ -1,8 +1,6 @@
 <template>
   <div class="sys-footer">
-    <el-footer>
-        版权所有@2015-2019 all right reserved
-    </el-footer>
+    版权所有@2015-2019 all right reserved
   </div>
 </template>
 

@@ -57,7 +57,7 @@
               console.log("获取权限信息...");
               this.$store.dispatch('menu/getMenuList',1).then(res=>{
                 console.log("跳转主页");
-                this.$router.push("home/house");
+                this.$router.push("home");
               });
             })
             .catch((err) => {

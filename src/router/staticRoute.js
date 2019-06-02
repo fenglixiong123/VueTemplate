@@ -1,11 +1,6 @@
 
 import Login from "../page/login";
-import Home from "../page/home";
-import House from "../page/house";
-import Time from "../page/time";
-import Admin from "../page/admin";
-import Guide from "../page/guide";
-import Setting from "../page/setting";
+import Layout from "../page/layout";
 import Statistic from "../page/statistic";
 
 import Test from '../page/Test'
@@ -21,50 +16,35 @@ const staticRoute = [
   },
   {
     path:'/login',
-    name:'login',
     component: Login
   },
   {
     path:'/home',
-    name:'home',
-    component:Home,
-    meta:{
-      auth:true
-    },
+    component: Layout,
     children:[
       {
-        path:'house',
-        name:'house',
-        component:House,
-        meta:{
-          auth:true
-        }
+        path:'',
+        component: ()=>import('../page/home'),
+      },
+      {
+        path:'picture',
+        component: ()=>import('../page/picture')
       },
       {
         path: 'time',
-        name:'time',
-        component: Time,
-        meta: {
-          auth: true
-        }
+        component: ()=>import('../page/time'),
       },
       {
         path: 'admin',
-        name:'admin',
-        component: Admin,
-        meta: {
-          auth: true
-        }
+        component: ()=>import('../page/admin'),
       },
       {
         path:'guide',
-        name:'guide',
-        component:Guide
+        component: ()=>import('../page/guide')
       },
       {
         path:'setting',
-        name:'setting',
-        component:Setting
+        component:()=>import('../page/setting')
       },
     ]
   },

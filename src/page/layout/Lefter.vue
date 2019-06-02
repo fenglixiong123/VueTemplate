@@ -1,6 +1,7 @@
 <template>
   <div class="sys-left">
     <el-menu :default-active="defActive" router
+             :default-openeds="opens"
              background-color="#545c64"
              text-color="#fff"
              active-text-color="#ffd04b">
@@ -16,7 +17,7 @@
       components: {LefterItem},
       data(){
         return{
-
+          opens:['/home','news']
         }
       },
       computed:{
@@ -35,7 +36,8 @@
 
 <style scoped>
 .sys-left{
-  float: left;
-  width: 30%;
+  padding-left: 20px;
+  margin-top: 20px;
+  margin-right: 20px;
 }
 </style>

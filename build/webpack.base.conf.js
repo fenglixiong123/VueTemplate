@@ -48,16 +48,7 @@ module.exports = {
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name(file){
-            return utils.keepAssetsPath({
-              // 打包后文件名
-              name: '[name].[hash:7].[ext]',
-              // 图片文件夹所在父级的绝对路径
-              assetsPath: resolve('src/assets'),
-              // 图片文件绝对路径，不需要修改
-              file: file
-            })
-          }
+          name: utils.assetsPath('img/[name].[hash:7].[ext]')
         }
       },
       {

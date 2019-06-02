@@ -1,7 +1,8 @@
 <template>
-    <div>
-
-    </div>
+  <div>
+    Setting
+    <hr/>
+  </div>
 </template>
 
 <script>

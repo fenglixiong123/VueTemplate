@@ -13,7 +13,6 @@
         text-color="#fff"
         active-text-color="#ffd04b">
 
-
         <el-menu-item index="1">处理中心</el-menu-item>
         <el-submenu index="2">
           <template slot="title">我的工作台</template>
@@ -32,7 +31,7 @@
 
         </div>
         <div class="sys-logout">
-          <el-button type="danger" size="min">退出</el-button>
+          <el-button type="danger" size="mini" @click="logOut">退出</el-button>
         </div>
 
       </el-menu>
@@ -52,6 +51,14 @@
       methods:{
         handleSelect(key, keyPath) {
           console.log(key, keyPath);
+        },
+        logOut:function () {
+          console.log("logOut");
+          this.$store.dispatch('auth/logout').then(rep=>{
+            this.$message.success("登出成功！");
+            console.log(rep);
+            this.$router.push('/login');
+          });
         }
       }
     }
