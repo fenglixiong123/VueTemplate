@@ -1,11 +1,12 @@
 <template>
   <div class="sys-left">
-    <el-menu :default-active="defActive" router
+    <el-menu router
+             :default-active="defActive"
              :default-openeds="opens"
              background-color="#545c64"
              text-color="#fff"
              active-text-color="#ffd04b">
-      <lefter-item v-for="(item,index) in menuTree" :item="item" :itemIndex="String(index)" :key="index"></lefter-item>
+      <LefterItem v-for="(item,index) in menuTree" :item="item" :itemIndex="String(index)" :key="index"></LefterItem>
     </el-menu>
   </div>
 </template>

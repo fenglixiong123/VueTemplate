@@ -13,6 +13,12 @@
 <script>
     export default {
       name: "LefterItem",
-      props:['item','itemIndex']
+      props:['item','itemIndex'],
+      methods:{
+        handleClick:function (index) {
+          console.log('sss',index);
+          document.getElementById('menu'+index).style.color='red';
+        }
+      }
     }
 </script>
