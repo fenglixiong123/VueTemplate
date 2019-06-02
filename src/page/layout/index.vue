@@ -8,7 +8,9 @@
       <!--左侧导航-->
       <el-container>
         <el-aside width="300px">
-          <Lefter/>
+          <keep-alive>
+            <Lefter/>
+          </keep-alive>
         </el-aside>
         <el-main>
           <!--中间内容-->
