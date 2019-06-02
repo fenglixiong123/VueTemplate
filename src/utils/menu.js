@@ -1,4 +1,3 @@
-import {toTree} from './tree'
 
 const adminMenuList = 'Admin-Menu-list';
 const adminMenuTree = 'Admin-Menu-tree';
@@ -22,12 +21,16 @@ function getMenuTree() {
 function setMenuList(menuList) {
   if(!menuList){return;}
   let menuArrayStr = JSON.stringify(menuList);
-  let menuTreeStr = JSON.stringify(toTree(menuList,0));
   sessionStorage.setItem(adminMenuList,menuArrayStr);
+}
+
+function setMenuTree(menuTree) {
+  if(!menuTree){return;}
+  let menuTreeStr = JSON.stringify(menuTree);
   sessionStorage.setItem(adminMenuTree,menuTreeStr);
 }
 
-function removeMenuList() {
+function removeMenu() {
   sessionStorage.removeItem(adminMenuList);
   sessionStorage.removeItem(adminMenuTree);
 }
@@ -36,5 +39,6 @@ export {
   getMenuList,
   getMenuTree,
   setMenuList,
-  removeMenuList
+  setMenuTree,
+  removeMenu
 }

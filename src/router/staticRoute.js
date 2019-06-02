@@ -8,12 +8,13 @@ import Guide from "../page/guide";
 import Setting from "../page/setting";
 import Statistic from "../page/statistic";
 
-import Error401 from '../page/error/401'
-import Error403 from '../page/error/403'
-import Error404 from '../page/error/404'
-import Error500 from '../page/error/500'
+import Test from '../page/Test'
 
 const staticRoute = [
+  {
+    path:'/test',
+    component: Test
+  },
   {
     path:'/',
     redirect: '/home/house'
@@ -72,29 +73,30 @@ const staticRoute = [
     component:Statistic
   },
   {
-    path:'/401',
-    name:'401',
-    component: Error401
-  },
-  {
-    path:'/403',
-    name:'403',
-    component: Error403
-  },
-  {
-    path:'/404',
-    name:'404',
-    component: Error404
-  },
-  {
-    path:'/500',
-    name:'500',
-    component: Error500
+    path:'/error',
+    component:()=>import('../page/error'),
+    children: [
+      {
+        path: '401',
+        component: () => import('../page/error/401')
+      },
+      {
+        path: '403',
+        component: () => import('../page/error/403')
+      },
+      {
+        path: '404',
+        component: () => import('../page/error/404')
+      },
+      {
+        path: '500',
+        component: () => import('../page/error/500')
+      }
+    ]
   },
   {
     path:'/*',
-    name:'NotFound',
-    redirect: '/404'
+    redirect: '/error/404'
   }
 ];
 

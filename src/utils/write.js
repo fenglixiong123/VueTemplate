@@ -2,10 +2,10 @@
 const writeList = [
   '/login',
   '/getToken',
-  '/401',
-  '/403',
-  '/404',
-  '/500',
+  '/error/401',
+  '/error/403',
+  '/error/404',
+  '/error/500',
   'https://api.github.com/users'
 ];
 
