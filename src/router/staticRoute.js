@@ -20,30 +20,50 @@ const staticRoute = [
   },
   {
     path:'/home',
+    title: '主页',
     component: Layout,
+    meta:{
+      title: '主页',
+    },
     children:[
       {
         path:'',
+
         component: ()=>import('../page/home'),
       },
       {
         path:'picture',
+        meta:{
+          title: '相册',
+        },
         component: ()=>import('../page/picture')
       },
       {
         path: 'time',
+        meta:{
+          title: '时光',
+        },
         component: ()=>import('../page/time'),
       },
       {
         path: 'admin',
+        meta:{
+          title: '用户',
+        },
         component: ()=>import('../page/admin'),
       },
       {
         path:'guide',
+        meta:{
+          title: '指南',
+        },
         component: ()=>import('../page/guide')
       },
       {
         path:'setting',
+        meta:{
+          title: '设置',
+        },
         component:()=>import('../page/setting')
       },
     ]

@@ -1,6 +1,8 @@
 <template>
   <div class="sys-content">
-    <h1>nav</h1>
+    <!--面包屑-->
+    <BreadCrumb :bread-list="levelList"/>
+    <!--视图层-->
     <keep-alive>
       <router-view></router-view>
     </keep-alive>
@@ -8,8 +10,38 @@
 </template>
 
 <script>
+    import BreadCrumb from "../../components/BreadCrumb/index";
     export default {
-      name: "Mainer"
+      name: "Mainer",
+      components: {BreadCrumb},
+      data(){
+        return{
+          levelList: [],
+        }
+      },
+      methods:{
+        /**
+         * 获取当前面包屑
+         */
+        getBreadCrumb:function () {
+          let breads = this.$route.matched;
+          console.log('build bread crumb...');
+          this.levelList = breads.map(item=>{
+            return{
+              path:item.path,
+              title:item.meta.title,
+            }
+          });
+        }
+      },
+      watch:{
+        $route(){
+          this.getBreadCrumb();
+        }
+      },
+      created() {
+        this.getBreadCrumb();
+      }
     }
 </script>
 
