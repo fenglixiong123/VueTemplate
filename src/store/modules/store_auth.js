@@ -55,16 +55,14 @@ const actions = {
     })
   },
 
-  logout({ commit, state }) {
+  logout({dispatch, commit, state }) {
     console.log("----->logout action");
     return new Promise((resolve, reject) => {
-      apiLogout(state.token).then(() => {
-        commit('setToken', '');
-        removeToken();
-        removeUser();
-        removeMenu();
-        removePowerList();
-        resolve();
+      apiLogout(state.token).then((res) => {
+        dispatch('resetToken');
+        resolve(res);
+      },err=>{
+        reject(err);
       })
     })
   },
@@ -75,6 +73,7 @@ const actions = {
       commit('setToken', '');
       removeToken();
       removeUser();
+      removeMenu();
       removePowerList();
       resolve()
     })

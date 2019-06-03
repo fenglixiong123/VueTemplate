@@ -17,7 +17,7 @@ const router = new Router({
 });
 
 
-let menuList = getMenuList();
+let menuList = store.getters['menu/menuList'];
 
 /**
  * 钩子函数

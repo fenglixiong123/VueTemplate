@@ -31,6 +31,9 @@
           },
         }
       },
+      created(){
+        this.$store.dispatch('auth/resetToken');
+      },
       mounted() {
         if (this.loginForm.username === '') {
           this.$refs.username.focus()
