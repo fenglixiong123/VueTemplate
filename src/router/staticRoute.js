@@ -49,6 +49,16 @@ const staticRoute = [
     ]
   },
   {
+    path:'/user',
+    component: Layout,
+    children:[
+      {
+        path: 'admin',
+        component: ()=>import('../page/admin'),
+      }
+    ]
+  },
+  {
     path:'/static',
     component:Statistic
   },

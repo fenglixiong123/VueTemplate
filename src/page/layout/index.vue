@@ -8,17 +8,11 @@
       <!--左侧导航-->
       <el-container>
         <el-aside width="300px">
-          <keep-alive>
-            <Lefter/>
-          </keep-alive>
+          <Lefter/>
         </el-aside>
         <el-main>
           <!--中间内容-->
-          <div class="sys-content">
-            <keep-alive>
-              <router-view></router-view>
-            </keep-alive>
-          </div>
+          <Mainer/>
         </el-main>
       </el-container>
       <el-footer>
@@ -33,9 +27,10 @@
     import Header from "./Header";
     import Lefter from "./Lefter";
     import Footer from "./Footer";
+    import Mainer from "./Mainer";
     export default {
       name: "LayOut",
-      components: {Lefter, Header, Footer}
+      components: {Mainer, Lefter, Header, Footer}
     }
 </script>
 

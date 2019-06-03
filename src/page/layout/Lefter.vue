@@ -5,7 +5,8 @@
              :default-openeds="defOpens"
              background-color="#545c64"
              text-color="#fff"
-             active-text-color="#ffd04b">
+             active-text-color="#ffd04b"
+             @select="handleMenuSelect">
       <LefterItem v-for="(item,index) in menuTree" :item="item" :navIndex="String(index)" :key="index"></LefterItem>
     </el-menu>
   </div>
@@ -18,7 +19,7 @@
       components: {LefterItem},
       data(){
         return{
-          defOpens:['/home/picture']
+          defOpens:['/home']
         }
       },
       computed:{
@@ -31,7 +32,9 @@
         },
       },
       methods:{
-
+        handleMenuSelect:function (index, indexPath) {
+          console.log(index,indexPath)
+        }
       }
     }
 </script>
