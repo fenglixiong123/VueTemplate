@@ -47,6 +47,12 @@ router.beforeEach((to,from,next)=>{
           isPowered = true;
         }
       });
+    }else {
+      alertErrorMsg('请登录后再访问');
+      next({
+        path: '/login',
+        query: { redirect: to.path }
+      })
     }
     if(isPowered){
       console.log('本页面检测到拥有权限');
