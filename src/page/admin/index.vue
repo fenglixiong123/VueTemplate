@@ -75,7 +75,7 @@
         }
       },
       mounted() {
-        this.$store.dispatch('admin/listPage',{page:1,pageSize:5});
+        this.$store.dispatch('admin/listPage',this.pageInfo);
       }
     }
 </script>

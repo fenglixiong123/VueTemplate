@@ -30,7 +30,7 @@ const actions = {
 
   queryPage({dispatch,commit,state},pageInfo){
     commit('setPageInfo',pageInfo);
-    dispatch('list',{
+    dispatch('listPage',{
       page : state.pageInfo.pageNo,
       pageSize : state.pageInfo.pageSize,
     });

@@ -3,7 +3,7 @@ import method from './method_const'
 
 function apiMenuListByAdminId(id) {
   return service({
-    url: '/adminApi/console/admin/findMenuListByAdminId',
+    url: '/adminApi/console/admin/menu/findMenuListByAdminId',
     method: method.GET,
     params: {id:id}
   })

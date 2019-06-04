@@ -7,12 +7,8 @@ import Test from '../page/Test'
 
 const staticRoute = [
   {
-    path:'/test',
-    component: Test
-  },
-  {
     path:'/',
-    redirect: '/home/house'
+    redirect: '/home'
   },
   {
     path:'/login',
@@ -71,16 +67,76 @@ const staticRoute = [
   {
     path:'/user',
     component: Layout,
+    meta:{
+      title:'用户管理'
+    },
     children:[
       {
         path: 'admin',
+        meta:{
+          title:'管理员用户'
+        },
         component: ()=>import('../page/admin'),
       }
     ]
   },
   {
-    path:'/static',
-    component:Statistic
+    path:'/role',
+    component: Layout,
+    meta:{
+      title:'角色管理'
+    },
+    children:[
+      {
+        path: 'admin',
+        meta:{
+          title:'管理员角色'
+        },
+        component: ()=>import('../page/role/admin'),
+      }
+    ]
+  },
+  {
+    path:'/menu',
+    component: Layout,
+    meta:{
+      title:'菜单管理'
+    },
+    children:[
+      {
+        path: 'admin',
+        meta:{
+          title:'管理员菜单'
+        },
+        component: ()=>import('../page/menu/admin'),
+      }
+    ]
+  },
+  {
+    path:'/power',
+    component: Layout,
+    meta:{
+      title:'权限管理'
+    },
+    children:[
+      {
+        path: 'admin',
+        meta:{
+          title:'管理员权限'
+        },
+        component: ()=>import('../page/power/admin'),
+      }
+    ]
+  },
+  {
+    path:'/test',
+    component: Layout,
+    children:[
+      {
+        path:'',
+        component: Test
+      }
+    ]
   },
   {
     path:'/error',
