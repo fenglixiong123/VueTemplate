@@ -25,7 +25,6 @@
          */
         getBreadCrumb:function () {
           let breads = this.$route.matched;
-          console.log('build bread crumb...');
           this.levelList = breads.map(item=>{
             return{
               path:item.path,

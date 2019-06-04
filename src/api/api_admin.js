@@ -1,7 +1,7 @@
 import service from '@/utils/ajax'
 import method from './method_const'
 
-function apiAdminList(data) {
+function apiAdminListPage(data) {
   return service({
     url: '/adminApi/console/admin/list',
     method: method.POST,
@@ -44,6 +44,6 @@ export {
   apiAdminAdd,
   apiAdminDelete,
   apiAdminGet,
-  apiAdminList,
+  apiAdminListPage,
   apiAdminUpdate
 }

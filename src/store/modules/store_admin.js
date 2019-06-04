@@ -1,5 +1,5 @@
 import {  apiAdminAdd, apiAdminDelete, apiAdminGet,
-  apiAdminList, apiAdminUpdate} from '../../api/api_admin'
+  apiAdminListPage, apiAdminUpdate} from '../../api/api_admin'
 import {alertSuccessMsg,alertErrorMsg} from '@/utils/message'
 
 const state = {
@@ -27,16 +27,18 @@ const mutations = {
 };
 
 const actions = {
-  changePage({dispatch,commit,state},pageInfo){
+
+  queryPage({dispatch,commit,state},pageInfo){
     commit('setPageInfo',pageInfo);
     dispatch('list',{
       page : state.pageInfo.pageNo,
       pageSize : state.pageInfo.pageSize,
     });
   },
-  list({commit,state},data){
+
+  listPage({commit,state},data){
     console.log(data);
-    apiAdminList(data).then(res=>{
+    apiAdminListPage(data).then(res=>{
       const pageResult = res.data;
       commit('setAdminList',pageResult.list);
       commit('setPageInfo',{
@@ -51,7 +53,7 @@ const actions = {
     apiAdminDelete(id).then(res=>{
       console.log('res',res);
       alertSuccessMsg('删除成功');
-      dispatch('changePage');
+      dispatch('queryPage');
     },err=>{
       console.log("err",err);
       alertErrorMsg('删除失败');

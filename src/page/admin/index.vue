@@ -63,19 +63,19 @@
 
         handleSizeChange(val) {
           console.log(`每页 ${val} 条`);
-          this.$store.dispatch('admin/changePage',{
+          this.$store.dispatch('admin/queryPage',{
             pageSize:val
           });
         },
         handleCurrentChange(val) {
           console.log(`当前页: ${val}`);
-          this.$store.dispatch('admin/changePage',{
+          this.$store.dispatch('admin/queryPage',{
             pageNo:val
           });
         }
       },
       mounted() {
-        this.$store.dispatch('admin/list',{page:1,pageSize:5});
+        this.$store.dispatch('admin/listPage',{page:1,pageSize:5});
       }
     }
 </script>
