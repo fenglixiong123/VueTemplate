@@ -19,15 +19,15 @@
     </app-toolbar>
     <div class="sys-table">
       <el-table :border="true" :data="tableList">
-        <el-table-column label="ID" prop="id" width="50px"></el-table-column>
+        <el-table-column label="ID" prop="id" width="40px"></el-table-column>
         <el-table-column label="角色名" prop="title" width="200px"></el-table-column>
         <el-table-column label="备注" prop="remark" ></el-table-column>
         <el-table-column label="操作" width="200px">
           <template slot-scope="scope">
             <el-button icon="el-icon-edit" type="primary" plain size="mini"
-                       @click="handleEdit(scope.$index, scope.row)"></el-button>
+                       @click="handleEdit(scope.row)"></el-button>
             <el-button icon="el-icon-delete" type="danger" plain size="mini"
-                       @click="handleDelete(scope.$index, scope.row)"></el-button>
+                       @click="handleDelete(scope.row)"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -145,7 +145,7 @@
           this.optionAdd = true;
           this.addFormVisible = true;
         },
-        handleEdit(index, row) {
+        handleEdit(row) {
           clearObj(this.entityVo);
           this.optionAdd = false;
           this.addFormVisible = true;
@@ -153,7 +153,7 @@
           this.entityVo.title = row.title;
           this.entityVo.remark = row.remark;
         },
-        handleDelete(index, row) {
+        handleDelete(row) {
           this.$confirm('确认删除此条记录?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',

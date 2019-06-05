@@ -10,7 +10,7 @@ function getToken() {
 //设置半小时过期
 function setToken(token) {
   if(!token) {return;}
-  let maxAge = new Date(new Date().getTime() + 30 * 60 * 1000);
+  let maxAge = new Date(new Date().getTime() + 60 * 60 * 1000);
   Cookies.set(TokenKey, token,{
     expires: maxAge
   })

@@ -6,8 +6,7 @@
 import Axios from 'axios'
 import router from '../router'
 import {getToken} from './auth'
-import {addRequest,removeRequest} from './repeat'
-import {alertErrorMsg} from './message'
+import {alertErrorMsg,notifyError} from './message'
 
 /**
  * 超时设置5秒
@@ -39,6 +38,9 @@ service.interceptors.response.use(
     switch (res.code) {
       case 200:
         return res;
+      case 300:
+        notifyError(res.data);
+        break;
       //服务器内部错误
       case 500:
         alertErrorMsg(res.data);
@@ -47,7 +49,7 @@ service.interceptors.response.use(
       case 4001:
         alertErrorMsg(res.msg);
         //将跳转的路由path作为参数，登录成功后跳转到该路由
-        router.replace({
+        router.push({
           path: 'login',
           query: { redirect: router.currentRoute.fullPath }
         });
