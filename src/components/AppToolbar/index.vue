@@ -17,3 +17,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+  .sys-toolbar{
+    margin-bottom: 10px;
+  }
+</style>

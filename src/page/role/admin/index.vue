@@ -1,96 +1,199 @@
 <template>
   <div>
-    <search-bar>
-      <el-form :inline="true" class="demo-form-inline">
+    <app-search>
+      <el-form :inline="true" class="demo-form-inline" size="mini">
         <el-form-item label="ID">
-          <el-input :value="entityVo.id" @input="updateForm({'id':$event})" placeholder="ID"></el-input>
+          <el-input v-model="searchVo.id" placeholder="ID"></el-input>
         </el-form-item>
         <el-form-item label="角色">
-          <el-input :value="entityVo.title" @input="updateForm({'title':$event})" placeholder="角色"></el-input>
+          <el-input v-model="searchVo.title" placeholder="角色"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
           <el-button type="primary" @click="onClear">清空</el-button>
         </el-form-item>
       </el-form>
-    </search-bar>
-    <el-button style="margin-bottom: 10px" type="primary" plain size="mini">新增</el-button>
-    <el-table :border="true" :data="tableList">
-      <el-table-column label="ID" prop="id" width="50px"></el-table-column>
-      <el-table-column label="角色名" prop="title" width="200px"></el-table-column>
-      <el-table-column label="备注" prop="remark" ></el-table-column>
-      <el-table-column label="操作" width="200px">
-        <template slot-scope="scope">
-          <el-button icon="el-icon-edit" type="primary" plain size="mini"
-            @click="handleEdit(scope.$index, scope.row)"></el-button>
-          <el-button icon="el-icon-delete" type="danger" plain size="mini"
-            @click="handleDelete(scope.$index, scope.row)"></el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    </app-search>
+    <app-toolbar>
+      <el-button type="primary" plain size="mini" @click="handleAdd">新增</el-button>
+    </app-toolbar>
+    <div class="sys-table">
+      <el-table :border="true" :data="tableList">
+        <el-table-column label="ID" prop="id" width="50px"></el-table-column>
+        <el-table-column label="角色名" prop="title" width="200px"></el-table-column>
+        <el-table-column label="备注" prop="remark" ></el-table-column>
+        <el-table-column label="操作" width="200px">
+          <template slot-scope="scope">
+            <el-button icon="el-icon-edit" type="primary" plain size="mini"
+                       @click="handleEdit(scope.$index, scope.row)"></el-button>
+            <el-button icon="el-icon-delete" type="danger" plain size="mini"
+                       @click="handleDelete(scope.$index, scope.row)"></el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <table-page :page-info="pageInfo" :page-change="pageChange" :size-change="sizeChange"/>
-
+    <div class="sys-add">
+      <el-dialog :title="optionAdd?'新增':'修改'" :visible.sync="addFormVisible" width="30%">
+        <el-form label-width="60px">
+          <el-form-item label="角色">
+            <el-input v-model="entityVo.title" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input v-model="entityVo.remark" autocomplete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="handleCancel">取消</el-button>
+          <el-button type="primary" @click="handleConfirm">确定</el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
 <script>
+    import {apiRoleAdd, apiRoleUpdate, apiRoleDelete, apiRoleListPage,} from '../../../api/api_role'
+    import {alertSuccessMsg,alertErrorMsg} from '../../../utils/message'
+    import {clearObj} from "../../../utils/common";
     import TablePage from "../../../components/TablePage/index";
-    import SearchBar from "../../../components/SearchBar/index";
+    import AppToolbar from "../../../components/AppToolbar/index";
+    import AppSearch from "../../../components/AppSearch/index";
     export default {
       name: "Role",
-      components: {SearchBar, TablePage},
+      components: {AppSearch, AppToolbar, TablePage},
       data(){
         return{
-          msg:''
+          optionAdd:false,
+          addFormVisible : false,
+          tableList:[],
+          searchVo : {
+            id : null,
+            title : null
+          },
+          entityVo : {
+            id : null,
+            title : null,
+            remark : null
+          },
+          pageInfo:{
+            total : 0,
+            pageNo : 1,
+            pageSize : 5,
+            pageSizes : [5, 10, 25, 50],
+          }
         }
       },
       computed:{
-        tableList:function () {
-          return this.$store.getters['role/tableList'];
-        },
-        pageInfo:function () {
-          return this.$store.getters['role/pageInfo'];
-        },
-        entityVo:function () {
-          console.log(this.$store.getters['role/entityVo']);
-          return this.$store.getters['role/entityVo'];
-        },
         queryVo:function () {
-          return this.$store.getters['role/queryVo'];
+          return {
+            page : this.pageInfo.pageNo,
+            pageSize : this.pageInfo.pageSize,
+            entity : this.searchVo
+          };
         },
       },
       methods:{
-        updateForm(val){
-          this.$store.dispatch('role/updateEntityVo',val);
+        apiAdd:function(){
+          apiRoleAdd(this.entityVo).then(res=>{
+            alertSuccessMsg("添加成功！");
+            clearObj(this.entityVo);
+            this.listPage();
+          },err=>{
+            alertErrorMsg("添加失败！");
+            console.log("err",err)
+          })
+        },
+        apiUpdate:function(){
+          apiRoleUpdate(this.entityVo).then(res=>{
+            alertSuccessMsg("更新成功！");
+            clearObj(this.entityVo);
+            this.listPage();
+          },err=>{
+            alertErrorMsg("更新失败！");
+            console.log("err",err)
+          })
+        },
+        apiDelete:function(id){
+          apiRoleDelete(id).then(res=>{
+            alertSuccessMsg('删除成功');
+            this.listPage();
+          },err=>{
+            console.log("err",err);
+            alertErrorMsg('删除失败');
+          });
+        },
+        listPage:function(){
+          apiRoleListPage(this.queryVo).then(res=>{
+            const pageResult = res.data;
+            const {list,total} = pageResult;
+            this.tableList = list;
+            this.pageInfo.total = total;
+          },err=>{
+            console.log("err",err);
+          });
         },
         onSubmit() {
-          this.$store.dispatch('role/listPage',this.queryVo);
+          this.listPage();
         },
         onClear(){
-          this.$store.dispatch('role/clearPage',this.queryVo);
+          clearObj(this.searchVo);
+          this.listPage();
+        },
+        handleAdd(){
+          clearObj(this.entityVo);
+          this.optionAdd = true;
+          this.addFormVisible = true;
         },
         handleEdit(index, row) {
-          console.log(index, row.id);
+          clearObj(this.entityVo);
+          this.optionAdd = false;
+          this.addFormVisible = true;
+          this.entityVo.id = row.id;
+          this.entityVo.title = row.title;
+          this.entityVo.remark = row.remark;
         },
         handleDelete(index, row) {
-          this.$store.dispatch('role/deleteRole',row.id);
+          this.$confirm('确认删除此条记录?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.apiDelete(row.id);
+          }).catch(()=>{});
         },
-
+        handleConfirm:function(){
+          if(this.optionAdd){
+            if(this.validate()){
+              this.apiAdd();
+            }else {return;}
+          }else{
+            this.apiUpdate();
+          }
+          this.addFormVisible = false;
+        },
+        handleCancel:function(){
+          clearObj(this.entityVo);
+          this.addFormVisible = false;
+        },
+        validate:function(){
+          if(this.entityVo.title==null||this.entityVo.title===''){
+            alertErrorMsg("角色不能为空");
+            return false;
+          }
+          return true;
+        },
         sizeChange(val) {
-          console.log(`每页 ${val} 条`);
-          this.$store.dispatch('role/queryPage',{
-            pageSize:val
-          });
+          this.pageInfo.pageSize = val;
+          this.listPage();
         },
         pageChange(val) {
-          console.log(`当前页: ${val}`);
-          this.$store.dispatch('role/queryPage',{
-            pageNo:val
-          });
+          this.pageInfo.pageNo = val;
+          this.listPage();
         }
       },
       mounted() {
-        this.$store.dispatch('role/listPage',this.queryVo);
+        this.listPage();
       }
     }
 </script>
