@@ -17,7 +17,6 @@ const router = new Router({
 });
 
 
-let menuList = store.getters['menu/menuList'];
 
 /**
  * 钩子函数
@@ -26,6 +25,7 @@ let menuList = store.getters['menu/menuList'];
 router.beforeEach((to,from,next)=>{
   NProgress.start();
   let token = store.getters.token;
+  let menuList = store.getters.menuList;
   console.log(`======>Route will go to : ${to.fullPath},token:${token}`);
 
   //如果是白名单

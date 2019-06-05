@@ -51,6 +51,12 @@
             this.$message.error("请填写密码");
             return;
           }
+          const loading = this.$loading({
+            lock: true,
+            text: 'Loading',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
           this.$store.dispatch('auth/login', this.loginForm)
             .then((res) => {
               this.$message.success("恭喜你，登录成功！");
@@ -59,11 +65,15 @@
               this.$store.dispatch('auth/getInfo');
               console.log("获取权限信息...");
               this.$store.dispatch('menu/getMenuList',1).then(res=>{
-                console.log("跳转主页");
-                this.$router.push("/home");
+                setTimeout(()=>{
+                  loading.close();
+                  console.log("跳转主页");
+                  this.$router.replace("/home");
+                },1000)
               });
             })
             .catch((err) => {
+              loading.close();
               console.log("登录请求出错：",err)
             })
         }

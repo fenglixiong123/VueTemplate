@@ -1,7 +1,6 @@
 
 import Login from "../page/login";
 import Layout from "../page/layout";
-import Statistic from "../page/statistic";
 
 import Test from '../page/Test'
 

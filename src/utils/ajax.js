@@ -47,10 +47,10 @@ service.interceptors.response.use(
         break;
       //尚未登录
       case 4001:
-        alertErrorMsg(res.msg);
+        notifyError(res.msg);
         //将跳转的路由path作为参数，登录成功后跳转到该路由
         router.push({
-          path: 'login',
+          path: '/login',
           query: { redirect: router.currentRoute.fullPath }
         });
         break;

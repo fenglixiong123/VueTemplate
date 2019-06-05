@@ -22,12 +22,22 @@
         <el-table-column label="ID" prop="id" width="40px"></el-table-column>
         <el-table-column label="角色名" prop="title" width="200px"></el-table-column>
         <el-table-column label="备注" prop="remark" ></el-table-column>
-        <el-table-column label="操作" width="200px">
+        <el-table-column label="操作" width="240px">
           <template slot-scope="scope">
-            <el-button icon="el-icon-edit" type="primary" plain size="mini"
+            <el-tooltip class="item" effect="light" content="编辑数据" placement="top-start">
+              <el-button icon="el-icon-edit" type="primary" plain size="mini"
                        @click="handleEdit(scope.row)"></el-button>
-            <el-button icon="el-icon-delete" type="danger" plain size="mini"
+            </el-tooltip>
+            <el-tooltip class="item" effect="light" content="分配菜单" placement="top-start">
+              <el-button icon="el-icon-s-operation" type="primary" plain size="mini" ></el-button>
+            </el-tooltip>
+            <el-tooltip class="item" effect="light" content="分配权限" placement="top-start">
+              <el-button icon="el-icon-setting" type="primary" plain size="mini" ></el-button>
+            </el-tooltip>
+            <el-tooltip class="item" effect="light" content="删除数据" placement="top-start">
+              <el-button icon="el-icon-delete" type="danger" plain size="mini"
                        @click="handleDelete(scope.row)"></el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>

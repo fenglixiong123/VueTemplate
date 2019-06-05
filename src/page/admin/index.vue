@@ -38,12 +38,20 @@
           </template>
         </el-table-column>
         <el-table-column label="备注" prop="remark" ></el-table-column>
-        <el-table-column label="操作" width="130px" fixed="right">
+        <el-table-column label="操作" width="200px" fixed="right">
           <template slot-scope="scope">
-            <el-button icon="el-icon-edit" type="primary" plain size="mini"
+            <el-tooltip class="item" effect="light" content="编辑数据" placement="top-start">
+              <el-button icon="el-icon-edit" type="primary" plain size="mini"
                        @click="handleEdit(scope.row)"></el-button>
-            <el-button icon="el-icon-delete" type="danger" plain size="mini"
+            </el-tooltip>
+            <el-tooltip class="item" effect="light" content="分配角色" placement="top-start">
+              <el-button icon="el-icon-user" type="primary" plain size="mini"
+                       @click="handleAssignRole(scope.row)"></el-button>
+            </el-tooltip>
+            <el-tooltip class="item" effect="light" content="删除数据" placement="top-start">
+              <el-button icon="el-icon-delete" type="danger" plain size="mini"
                        @click="handleDelete(scope.row)"></el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -89,6 +97,28 @@
         </div>
       </el-dialog>
     </div>
+
+    <div class="sys-distribute">
+      <el-dialog title="分配角色" :visible.sync="assignRoleFormVisible" width="50%">
+        <el-checkbox-group v-model="roleList" true-label="管理员" size="small">
+          <el-checkbox label="管理员"  ></el-checkbox>
+          <el-checkbox label="总经理"  ></el-checkbox>
+          <el-checkbox label="部长"  ></el-checkbox>
+          <el-checkbox label="店长" border></el-checkbox>
+          <el-checkbox label="大区经理1" border></el-checkbox>
+          <el-checkbox label="大区经理2" border></el-checkbox>
+          <el-checkbox label="大区经理3" border></el-checkbox>
+          <el-checkbox label="大区经理4" border></el-checkbox>
+          <el-checkbox label="大区经理5" border></el-checkbox>
+        </el-checkbox-group>
+        {{roleList}}
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="assignRoleFormVisible=false">取消</el-button>
+          <el-button type="primary" @click="assignRoleFormVisible=false">确定</el-button>
+        </div>
+      </el-dialog>
+    </div>
+
   </div>
 </template>
 
@@ -129,7 +159,9 @@
           pageNo : 1,
           pageSize : 5,
           pageSizes : [5, 10, 25, 50],
-        }
+        },
+        assignRoleFormVisible:false,
+        roleList:[]
       }
     },
     computed:{
@@ -143,6 +175,13 @@
     },
     methods:{
       apiAdd:function(){
+        if(this.entityVo.sex){
+          if(this.entityVo.sex === '男'){
+            this.entityVo.sex = 1;
+          } else if(this.entityVo.sex === '女'){
+            this.entityVo.sex = 0;
+          }
+        }
         apiAdminAdd(this.entityVo).then(res=>{
           alertSuccessMsg("添加成功！");
           clearObj(this.entityVo);
@@ -153,6 +192,13 @@
         })
       },
       apiUpdate:function(){
+        if(this.entityVo.sex){
+          if(this.entityVo.sex === '男'){
+            this.entityVo.sex = 1;
+          } else if(this.entityVo.sex === '女'){
+            this.entityVo.sex = 0;
+          }
+        }
         apiAdminUpdate(this.entityVo).then(res=>{
           alertSuccessMsg("更新成功！");
           clearObj(this.entityVo);
@@ -190,6 +236,7 @@
       },
       handleAdd(){
         clearObj(this.entityVo);
+        this.entityVo.sex = '男';
         this.optionAdd = true;
         this.addFormVisible = true;
       },
@@ -201,7 +248,7 @@
         this.entityVo.username = row.username;
         this.entityVo.nickname = row.nickname;
         this.entityVo.icon = row.icon;
-        this.entityVo.sex = row.sex===1?'男':'女';
+        this.entityVo.sex = row.sex ===1?'男':'女';
         this.entityVo.phone = row.phone;
         this.entityVo.email = row.email;
         this.entityVo.address = row.address;
@@ -237,6 +284,9 @@
           return false;
         }
         return true;
+      },
+      handleAssignRole(row){
+        this.assignRoleFormVisible = true;
       },
       sizeChange(val) {
         this.pageInfo.pageSize = val;

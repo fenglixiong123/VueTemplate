@@ -1,52 +1,56 @@
 <template>
   <div>
-    Home
-    <hr/>
-    <app-title>前言</app-title>
-    <app-note>
-      <p>1</p>
-      <p>2</p>
-      <p>3</p>
-    </app-note>
-    <app-section title="学习">
-      section1
+    <app-section :title="'欢迎您 , '+userInfo.username">
+      <el-row>
+        <el-col :span="8">
+          <el-card shadow="always" :body-style="cardStyle">
+            <p>用户ID：{{userInfo.id}}</p>
+            <p>用户名：{{userInfo.username}}</p>
+            <p>昵称：{{userInfo.nickname}}</p>
+            <p>性别：{{userInfo.sex===0?'女':'男'}}</p>
+            <p>Email：{{userInfo.email}}</p>
+            <p>Phone：{{userInfo.phone}}</p>
+            <p>地址：{{userInfo.address}}</p>
+          </el-card>
+        </el-col>
+      </el-row>
     </app-section>
-    <app-section title="娱乐">
-      section2
-    </app-section>
-    <app-section title="文化">
-      section3
-    </app-section>
+
   </div>
 </template>
 
 <script>
 
-
+  import AppSection from "../../components/AppSection/index";
   export default {
-    name: 'index',
+    name: 'Home',
+    components: {AppSection},
     data(){
       return{
-        opens:['/selfManage']
+        cardStyle:{
+          padding:'20px',
+          color:'yellow',
+          backgroundColor:'grey'
+        }
+      }
+    },
+    computed:{
+      userInfo:function () {
+        return this.$store.getters.userInfo;
       }
     },
     methods:{
-      handleSelect:function (key, keyPath) {
-        console.log(key,keyPath)
-      },
-      handleOpen(key, keyPath) {
-        console.log(key, keyPath);
-      },
-      handleClose(key, keyPath) {
-        console.log(key, keyPath);
-      },
-      logOut:function () {
-        console.log("logOut");
-        this.$store.dispatch('auth/logout').then(rep=>{
-          this.$message.success("登出成功！");
-          console.log(rep);
-          this.$router.push('/login');
+      //全局loading加载器
+      openLoading(){
+        const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
         });
+        setTimeout(()=>{
+          loading.close();
+        },2000)
       }
     }
   }
