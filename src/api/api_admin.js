@@ -40,10 +40,38 @@ function apiAdminDelete(id) {
   })
 }
 
+function apiAdminFindPossessRole(id) {
+  return service({
+    url: `/adminApi/console/admin/findPossessRoleByAdminId/${id}`,
+    method: method.GET,
+  })
+}
+
+/**
+ * Post请求传输数组
+ * 1.利用json
+ * 2.如下所示
+ * 3.转换成字符串
+ */
+function apiAdminAssignRole(adminId,roleIds) {
+  console.log(adminId,roleIds);
+  return service({
+    url: '/adminApi/console/admin/assignRoleToAdmin',
+    method: method.POST,
+    traditional:true,
+    params:{
+      adminId,
+      roleIds : roleIds+''
+    }
+  })
+}
+
 export {
-  apiAdminAdd,
-  apiAdminDelete,
   apiAdminGet,
+  apiAdminAdd,
+  apiAdminUpdate,
+  apiAdminDelete,
   apiAdminListPage,
-  apiAdminUpdate
+  apiAdminAssignRole,
+  apiAdminFindPossessRole
 }

@@ -9,13 +9,13 @@
           <el-input v-model="searchVo.nickname" placeholder="昵称"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
-          <el-button type="primary" @click="onClear">清空</el-button>
+          <el-button type="primary" @click="searchSubmit">查询</el-button>
+          <el-button type="primary" @click="searchClear">清空</el-button>
         </el-form-item>
       </el-form>
     </app-search>
     <app-toolbar>
-      <el-button type="primary" plain size="mini" @click="handleAdd">新增</el-button>
+      <el-button type="primary" plain size="mini" @click="addDialogOpen">新增</el-button>
     </app-toolbar>
     <div class="sys-table">
       <el-table :border="true" :data="tableList">
@@ -46,7 +46,7 @@
             </el-tooltip>
             <el-tooltip class="item" effect="light" content="分配角色" placement="top-start">
               <el-button icon="el-icon-user" type="primary" plain size="mini"
-                       @click="handleAssignRole(scope.row)"></el-button>
+                       @click="assignRoleDialogOpen(scope.row)"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="light" content="删除数据" placement="top-start">
               <el-button icon="el-icon-delete" type="danger" plain size="mini"
@@ -92,30 +92,26 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="handleCancel">取消</el-button>
-          <el-button type="primary" @click="handleConfirm">确定</el-button>
+          <el-button @click="addDialogCancel">取消</el-button>
+          <el-button type="primary" @click="addDialogConfirm">确定</el-button>
         </div>
       </el-dialog>
     </div>
 
     <div class="sys-distribute">
-      <el-dialog title="分配角色" :visible.sync="assignRoleFormVisible" width="50%">
-        <el-checkbox-group v-model="roleList" true-label="管理员" size="small">
-          <el-checkbox label="管理员"  ></el-checkbox>
-          <el-checkbox label="总经理"  ></el-checkbox>
-          <el-checkbox label="部长"  ></el-checkbox>
-          <el-checkbox label="店长" border></el-checkbox>
-          <el-checkbox label="大区经理1" border></el-checkbox>
-          <el-checkbox label="大区经理2" border></el-checkbox>
-          <el-checkbox label="大区经理3" border></el-checkbox>
-          <el-checkbox label="大区经理4" border></el-checkbox>
-          <el-checkbox label="大区经理5" border></el-checkbox>
-        </el-checkbox-group>
-        {{roleList}}
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="assignRoleFormVisible=false">取消</el-button>
-          <el-button type="primary" @click="assignRoleFormVisible=false">确定</el-button>
-        </div>
+      <el-dialog title="分配角色"  :visible.sync="assignRoleFormVisible" width="50%">
+        <el-card class="box-card" shadow="hover" v-loading="assignRoleDialogLoading">
+          <el-checkbox-group v-model="hasRoles" size="small">
+            <el-checkbox class="sys-checkbox" v-for="(item,index) in allRoles" :label="item.id" :key="index" border>
+              {{item.title}}
+            </el-checkbox>
+          </el-checkbox-group>
+          <br/>
+        </el-card>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="assignRoleDialogCancel">取消</el-button>
+            <el-button type="primary" @click="assignRoleDialogConfirm" :disabled="assignRoleDialogLoading">确定</el-button>
+          </div>
       </el-dialog>
     </div>
 
@@ -123,7 +119,8 @@
 </template>
 
 <script>
-  import {apiAdminAdd, apiAdminUpdate, apiAdminDelete, apiAdminListPage,} from '../../api/api_admin'
+  import {apiAdminAdd, apiAdminUpdate, apiAdminDelete, apiAdminListPage,
+    apiAdminAssignRole,apiAdminFindPossessRole} from '../../api/api_admin'
   import {alertSuccessMsg,alertErrorMsg} from '../../utils/message'
   import {clearObj} from "../../utils/common";
   import TablePage from "../../components/TablePage/index";
@@ -160,8 +157,11 @@
           pageSize : 5,
           pageSizes : [5, 10, 25, 50],
         },
-        assignRoleFormVisible:false,
-        roleList:[]
+        currentRowId : null,
+        assignRoleFormVisible : false,
+        assignRoleDialogLoading : true,
+        allRoles : [],
+        hasRoles : [],
       }
     },
     computed:{
@@ -174,7 +174,7 @@
       },
     },
     methods:{
-      apiAdd:function(){
+      selectParseForSex(){
         if(this.entityVo.sex){
           if(this.entityVo.sex === '男'){
             this.entityVo.sex = 1;
@@ -182,40 +182,6 @@
             this.entityVo.sex = 0;
           }
         }
-        apiAdminAdd(this.entityVo).then(res=>{
-          alertSuccessMsg("添加成功！");
-          clearObj(this.entityVo);
-          this.listPage();
-        },err=>{
-          alertErrorMsg("添加失败！");
-          console.log("err",err)
-        })
-      },
-      apiUpdate:function(){
-        if(this.entityVo.sex){
-          if(this.entityVo.sex === '男'){
-            this.entityVo.sex = 1;
-          } else if(this.entityVo.sex === '女'){
-            this.entityVo.sex = 0;
-          }
-        }
-        apiAdminUpdate(this.entityVo).then(res=>{
-          alertSuccessMsg("更新成功！");
-          clearObj(this.entityVo);
-          this.listPage();
-        },err=>{
-          alertErrorMsg("更新失败！");
-          console.log("err",err)
-        })
-      },
-      apiDelete:function(id){
-        apiAdminDelete(id).then(res=>{
-          alertSuccessMsg('删除成功');
-          this.listPage();
-        },err=>{
-          console.log("err",err);
-          alertErrorMsg('删除失败');
-        });
       },
       listPage:function(){
         apiAdminListPage(this.queryVo).then(res=>{
@@ -227,18 +193,12 @@
           console.log("err",err);
         });
       },
-      onSubmit() {
+      searchSubmit() {
         this.listPage();
       },
-      onClear(){
+      searchClear(){
         clearObj(this.searchVo);
         this.listPage();
-      },
-      handleAdd(){
-        clearObj(this.entityVo);
-        this.entityVo.sex = '男';
-        this.optionAdd = true;
-        this.addFormVisible = true;
       },
       handleEdit(row) {
         clearObj(this.entityVo);
@@ -261,32 +221,85 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.apiDelete(row.id);
+          apiAdminDelete(row.id).then(res=>{
+            alertSuccessMsg('删除成功');
+            this.listPage();
+          },err=>{
+            console.log("err",err);
+            alertErrorMsg('删除失败');
+          });
         }).catch(()=>{});
       },
-      handleConfirm:function(){
-        if(this.optionAdd){
-          if(this.validate()){
-            this.apiAdd();
-          }else {return;}
-        }else{
-          this.apiUpdate();
-        }
-        this.addFormVisible = false;
-      },
-      handleCancel:function(){
-        clearObj(this.entityVo);
-        this.addFormVisible = false;
-      },
       validate:function(){
-        if(this.entityVo.title==null||this.entityVo.title===''){
+        if(this.entityVo.username==null||this.entityVo.username===''){
           alertErrorMsg("用户不能为空");
           return false;
         }
         return true;
       },
-      handleAssignRole(row){
+      addDialogOpen(){
+        clearObj(this.entityVo);
+        this.entityVo.sex = '男';
+        this.optionAdd = true;
+        this.addFormVisible = true;
+      },
+      addDialogConfirm:function(){
+        this.selectParseForSex();
+        if(this.optionAdd){
+          if(this.validate()){
+            apiAdminAdd(this.entityVo).then(res=>{
+              alertSuccessMsg("添加成功！");
+              clearObj(this.entityVo);
+              this.listPage();
+            },err=>{
+              alertErrorMsg("添加失败！");
+              console.log("err",err)
+            })
+          }else {return;}
+        }else{
+          apiAdminUpdate(this.entityVo).then(res=>{
+            alertSuccessMsg("更新成功！");
+            clearObj(this.entityVo);
+            this.listPage();
+          },err=>{
+            alertErrorMsg("更新失败！");
+            console.log("err",err)
+          })
+        }
+        this.addFormVisible = false;
+      },
+      addDialogCancel:function(){
+        clearObj(this.entityVo);
+        this.addFormVisible = false;
+      },
+      assignRoleDialogOpen(row){
+        this.currentRowId = row.id;
         this.assignRoleFormVisible = true;
+        this.assignRoleDialogLoading = true;
+        apiAdminFindPossessRole(row.id).then(res=>{
+          const {allRoles,hasRoles} = res.data;
+          this.allRoles = allRoles;
+          this.hasRoles = hasRoles;
+          this.assignRoleDialogLoading = false;
+        },err=>{
+          console.log('err',err);
+        })
+      },
+      assignRoleDialogConfirm(){
+        this.assignRoleFormVisible = false;
+        apiAdminAssignRole(this.currentRowId,this.hasRoles).then(res=>{
+          alertSuccessMsg('分配角色成功！');
+        },err=>{
+          alertErrorMsg('分配角色失败！');
+          console.log('err',err)
+        })
+      },
+      assignRoleDialogCancel(){
+        this.assignRoleFormVisible = false;
+        setTimeout(()=>{
+          this.allRoles = [];
+          this.hasRoles = [];
+        },200)
       },
       sizeChange(val) {
         this.pageInfo.pageSize = val;
@@ -304,5 +317,8 @@
 </script>
 
 <style scoped>
-
+.sys-checkbox{
+  margin-left: 10px;
+  margin-top: 20px;
+}
 </style>

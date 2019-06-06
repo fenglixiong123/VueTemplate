@@ -39,15 +39,18 @@ service.interceptors.response.use(
       case 200:
         return res;
       case 300:
-        notifyError(res.data);
+        notifyError('☹=>'+res.data);
+        break;
+      case 400:
+        notifyError('☹=>'+res.data);
         break;
       //服务器内部错误
       case 500:
-        alertErrorMsg(res.data);
+        notifyError('☹=>'+res.data);
         break;
       //尚未登录
       case 4001:
-        notifyError(res.msg);
+        notifyError('☹=>'+res.msg);
         //将跳转的路由path作为参数，登录成功后跳转到该路由
         router.push({
           path: '/login',
@@ -56,22 +59,22 @@ service.interceptors.response.use(
         break;
       //用户被禁用
       case 4002:
-        alertErrorMsg(res.msg);
+        notifyError('☹=>'+res.msg);
         break;
       //暂无权限
       case 4003:
-        alertErrorMsg(res.msg);
+        notifyError('☹=>'+res.msg);
         break;
       //用户名密码错误
       case 4004:
-        alertErrorMsg(res.msg);
+        alertErrorMsg('☹=>'+res.msg);
         break;
     }
     return Promise.reject(res)
   },
   err => {
     console.log("【service response】请求发生了错误 : ",err);
-    alertErrorMsg(`错误代码：${err.response.status},未找到可用的后台服务！`);
+    alertErrorMsg(`☹=>错误代码：${err.response.status},未找到可用的后台服务！`);
     return Promise.reject(err)
   }
 );

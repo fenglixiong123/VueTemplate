@@ -3,14 +3,16 @@
 function toTree(data, pid) {
   let tree = [];
   let temp;
-  for (let i = 0; i < data.length; i++) {
-    if (data[i].parentId === pid) {
-      let obj = data[i];
-      temp = toTree(data, data[i].id);
-      if (temp.length > 0) {
-        obj.children = temp;
+  if(data) {
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].parentId === pid) {
+        let obj = data[i];
+        temp = toTree(data, data[i].id);
+        if (temp.length > 0) {
+          obj.children = temp;
+        }
+        tree.push(obj);
       }
-      tree.push(obj);
     }
   }
   return tree;
