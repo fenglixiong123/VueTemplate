@@ -17,6 +17,13 @@ function apiPowerList(data) {
   })
 }
 
+function apiPowerTree() {
+  return service({
+    url: '/adminApi/console/admin/power/tree',
+    method: method.GET,
+  })
+}
+
 function apiPowerListPage(data) {
   return service({
     url: '/adminApi/console/admin/power/list',
@@ -62,5 +69,6 @@ export {
   apiPowerUpdate,
   apiPowerDelete,
   apiPowerList,
+  apiPowerTree,
   apiPowerListPage
 }

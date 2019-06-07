@@ -17,6 +17,13 @@ function apiMenuList(data) {
   })
 }
 
+function apiMenuTree() {
+  return service({
+    url: '/adminApi/console/admin/menu/tree',
+    method: method.GET,
+  })
+}
+
 function apiMenuListPage(data) {
   return service({
     url: '/adminApi/console/admin/menu/list',
@@ -62,5 +69,6 @@ export {
   apiMenuUpdate,
   apiMenuDelete,
   apiMenuList,
+  apiMenuTree,
   apiMenuListPage
 }
