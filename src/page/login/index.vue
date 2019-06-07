@@ -61,15 +61,20 @@
             .then((res) => {
               console.log("login success",res.code);
               console.log("获取用户信息...");
-              this.$store.dispatch('auth/getInfo');
-              console.log("获取权限信息...");
-              this.$store.dispatch('menu/getMenuList',1).then(res=>{
-                setTimeout(()=>{
-                  this.$message.success("恭喜你，登录成功！");
-                  loading.close();
-                  console.log("跳转主页");
-                  this.$router.replace("/home");
-                },1000)
+              this.$store.dispatch('auth/getInfo').then(res=>{
+                if(res.data){
+                  let id = res.data.id;
+                  console.log("获取权限信息...");
+                  this.$store.dispatch('menu/getMenuList',id).then(res=>{
+                    console.log(res.code);
+                    setTimeout(()=>{
+                      this.$message.success("恭喜你，登录成功！");
+                      loading.close();
+                      console.log("跳转主页");
+                      this.$router.replace("/home");
+                    },1000)
+                  });
+                }
               });
             })
             .catch((err) => {

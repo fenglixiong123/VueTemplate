@@ -18,7 +18,7 @@
       <el-button type="primary" plain size="mini" @click="addDialogOpen" :disabled="tableLoading">新增</el-button>
     </app-toolbar>
     <div class="sys-table">
-      <el-table :border="true" :data="tableList" v-loading="tableLoading">
+      <el-table :border="true" :data="tableList" v-loading="tableLoading" tooltip-effect="dark">
         <el-table-column label="ID" prop="id" width="40px"></el-table-column>
         <el-table-column label="用户名" prop="username" width="100px"></el-table-column>
         <el-table-column label="昵称" prop="nickname" width="100px"></el-table-column>
@@ -30,7 +30,7 @@
         </el-table-column>
         <el-table-column label="手机号" prop="phone" width="120px"></el-table-column>
         <el-table-column label="邮箱" prop="email" width="200px"></el-table-column>
-        <el-table-column label="地址" prop="address" width="200px"></el-table-column>
+        <el-table-column label="地址" prop="address" width="200px" show-overflow-tooltip></el-table-column>
         <el-table-column label="状态" prop="status" width="50px">
           <template slot-scope="scope">
             <span v-if="scope.row.status===1"><i class="el-icon-success"></i></span>

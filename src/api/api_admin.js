@@ -54,7 +54,6 @@ function apiAdminFindPossessRole(id) {
  * 3.转换成字符串
  */
 function apiAdminAssignRole(adminId,roleIds) {
-  console.log(adminId,roleIds);
   return service({
     url: '/adminApi/console/admin/assignRoleToAdmin',
     method: method.POST,

@@ -47,6 +47,45 @@ function apiRoleDelete(id) {
   })
 }
 
+function apiRoleFindPossessMenu(id) {
+  return service({
+    url: `/adminApi/console/admin/role/findPossessMenuByRoleId/${id}`,
+    method: method.GET,
+  })
+}
+
+function apiRoleFindPossessPower(id) {
+  return service({
+    url: `/adminApi/console/admin/role/findPossessPowerByRoleId/${id}`,
+    method: method.GET,
+  })
+}
+
+function apiRoleAssignMenu(roleId,menuIds) {
+  return service({
+    url: '/adminApi/console/admin/role/assignMenuToRole',
+    method: method.POST,
+    traditional:true,
+    params:{
+      roleId,
+      menuIds : menuIds + ''
+    }
+  })
+}
+
+function apiRoleAssignPower(roleId,powerIds) {
+  return service({
+    url: '/adminApi/console/admin/role/assignPowerToRole',
+    method: method.POST,
+    traditional:true,
+    params:{
+      roleId,
+      powerIds : powerIds + ''
+    }
+  })
+}
+
+
 export {
   apiRoleGet,
   apiRoleAdd,
@@ -54,4 +93,8 @@ export {
   apiRoleDelete,
   apiRoleList,
   apiRoleListPage,
+  apiRoleAssignMenu,
+  apiRoleAssignPower,
+  apiRoleFindPossessMenu,
+  apiRoleFindPossessPower,
 }

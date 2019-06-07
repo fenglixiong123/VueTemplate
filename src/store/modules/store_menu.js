@@ -37,7 +37,7 @@ const actions = {
         setMenuList(res.data);
         setMenuTree(menuTree);
         console.log('successful to get menus !');
-        resolve(res.data);
+        resolve(res);
       },err=>{
         reject(err);
       });

@@ -29,10 +29,12 @@
                        @click="handleEdit(scope.row)"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="light" content="分配菜单" placement="top-start">
-              <el-button icon="el-icon-s-operation" type="primary" plain size="mini" ></el-button>
+              <el-button icon="el-icon-s-operation" type="primary" plain size="mini"
+                       @click="assignMenuDialogOpen(scope.row)"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="light" content="分配权限" placement="top-start">
-              <el-button icon="el-icon-setting" type="primary" plain size="mini" ></el-button>
+              <el-button icon="el-icon-setting" type="primary" plain size="mini"
+                       @click="assignPowerDialogOpen(scope.row)"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="light" content="删除数据" placement="top-start">
               <el-button icon="el-icon-delete" type="danger" plain size="mini"
@@ -59,11 +61,49 @@
         </div>
       </el-dialog>
     </div>
+    <div class="sys-assign-menu">
+      <el-dialog title="分配菜单" :visible.sync="assignMenuDialogVisible" width="40%">
+        <el-button style="margin-bottom: 10px" type="primary" size="mini" @click="clearMenuTree">清空</el-button>
+        {{hasMenus}}
+        <el-tree ref="menuTree" v-loading="assignMenuDialogLoading"
+                 :data="allMenus" node-key="id" check-strictly
+                 show-checkbox default-expand-all highlight-current
+                 @check-change="assignMenuSelectChange">
+          <span class="custom-tree-node" slot-scope="{ node, data }">
+            <span>{{ data.title }}-{{data.id}}</span>
+          </span>
+        </el-tree>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="assignMenuDialogCancel">取消</el-button>
+          <el-button type="primary" @click="assignMenuDialogConfirm" :disabled="assignMenuDialogLoading">确定</el-button>
+        </div>
+      </el-dialog>
+    </div>
+    <div class="sys-assign-menu">
+      <el-dialog title="分配权限" :visible.sync="assignPowerDialogVisible" width="30%">
+        <el-button style="margin-bottom: 10px" type="primary" size="mini" @click="clearPowerTree">清空</el-button>
+        {{hasPowers}}
+        <el-tree ref="powerTree" v-loading="assignPowerDialogLoading"
+                 :data="allPowers" node-key="id" check-strictly
+                 show-checkbox default-expand-all highlight-current
+                 @check-change="assignPowerSelectChange">
+          <span class="custom-tree-node" slot-scope="{ node, data }">
+            <span>{{ data.title }}</span>
+          </span>
+        </el-tree>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="assignPowerDialogCancel">取消</el-button>
+          <el-button type="primary" @click="assignPowerDialogConfirm" :disabled="assignPowerDialogLoading">确定</el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
 <script>
-    import {apiRoleAdd, apiRoleUpdate, apiRoleDelete, apiRoleListPage,} from '../../../api/api_role'
+    import {apiRoleAdd, apiRoleUpdate, apiRoleDelete, apiRoleListPage,
+      apiRoleFindPossessMenu,apiRoleFindPossessPower,
+      apiRoleAssignMenu,apiRoleAssignPower} from '../../../api/api_role'
     import {alertSuccessMsg, alertErrorMsg, notifyError} from '../../../utils/message'
     import {clearObj} from "../../../utils/common";
     import TablePage from "../../../components/TablePage/index";
@@ -92,7 +132,18 @@
             pageNo : 1,
             pageSize : 5,
             pageSizes : [5, 10, 25, 50],
-          }
+          },
+          currentRowId:null,
+          allMenus:[],
+          hasMenus:[],
+          allPowers:[],
+          hasPowers:[],
+          checkMenus:[],
+          checkPowers:[],
+          assignMenuDialogVisible:false,
+          assignMenuDialogLoading:false,
+          assignPowerDialogVisible:false,
+          assignPowerDialogLoading:false,
         }
       },
       computed:{
@@ -181,6 +232,81 @@
         addDialogCancel:function(){
           clearObj(this.entityVo);
           this.addFormVisible = false;
+        },
+        assignMenuDialogOpen:function(row){
+          this.currentRowId = row.id;
+          this.assignMenuDialogVisible = true;
+          this.assignMenuDialogLoading = true;
+          apiRoleFindPossessMenu(row.id).then(res=>{
+            const {allMenus,hasMenus} = res.data;
+            this.allMenus = allMenus;
+            this.hasMenus = hasMenus;
+            this.$refs.menuTree.setCheckedKeys(hasMenus);
+            this.assignMenuDialogLoading = false;
+          },err=>{
+            console.log('err',err);
+          })
+        },
+        assignMenuDialogConfirm:function(){
+          this.assignMenuDialogVisible = false;
+          apiRoleAssignMenu(this.currentRowId,this.hasMenus).then(res=>{
+            alertSuccessMsg('分配菜单成功！');
+          }).catch(err=>{
+            alertErrorMsg('分配角色失败！');
+            console.log(err);
+          })
+        },
+        assignMenuDialogCancel:function(){
+          this.assignMenuDialogVisible = false;
+          setTimeout(()=>{
+            this.allMenus = [];
+            this.hasMenus = [];
+          },200)
+
+        },
+        assignPowerDialogOpen:function(row){
+          this.currentRowId = row.id;
+          this.assignPowerDialogVisible = true;
+          this.assignPowerDialogLoading = true;
+          apiRoleFindPossessPower(row.id).then(res=>{
+            const {allPowers,hasPowers} = res.data;
+            this.allPowers = allPowers;
+            this.hasPowers = hasPowers;
+            this.$refs.powerTree.setCheckedKeys(hasPowers);
+            this.assignPowerDialogLoading = false;
+          },err=>{
+            console.log('err',err);
+          })
+        },
+        assignPowerDialogConfirm:function(){
+          this.assignPowerDialogVisible = false;
+          apiRoleAssignPower(this.currentRowId,this.hasPowers).then(res=>{
+            alertSuccessMsg('分配权限成功！');
+          }).catch(err=>{
+            alertErrorMsg('分配权限失败！');
+            console.log(err);
+          })
+        },
+        assignPowerDialogCancel:function(){
+          this.assignPowerDialogVisible = false;
+          setTimeout(()=>{
+            this.allPowers = [];
+            this.hasPowers = [];
+          },200)
+        },
+        assignMenuSelectChange:function(){
+          this.hasMenus = this.$refs.menuTree.getCheckedKeys()
+            .concat(this.$refs.menuTree.getHalfCheckedKeys());
+        },
+        assignPowerSelectChange:function(){
+          this.hasPowers = this.$refs.powerTree.getCheckedKeys()
+            .concat(this.$refs.powerTree.getHalfCheckedKeys());
+        },
+        clearMenuTree:function(){
+          this.$refs.menuTree.setCheckedKeys([]);
+        },
+        clearPowerTree:function(){
+          this.$refs.powerTree.setCheckedKeys([]);
         },
         validate:function(){
           if(this.entityVo.title==null||this.entityVo.title===''){
