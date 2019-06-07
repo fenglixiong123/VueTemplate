@@ -9,16 +9,16 @@
           <el-input v-model="searchVo.title" placeholder="角色"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
-          <el-button type="primary" @click="onClear">清空</el-button>
+          <el-button type="primary" @click="searchSubmit" :disabled="tableLoading">查询</el-button>
+          <el-button type="primary" @click="searchClear" :disabled="tableLoading">清空</el-button>
         </el-form-item>
       </el-form>
     </app-search>
     <app-toolbar>
-      <el-button type="primary" plain size="mini" @click="handleAdd">新增</el-button>
+      <el-button type="primary" plain size="mini" @click="addDialogOpen" :disabled="tableLoading">新增</el-button>
     </app-toolbar>
     <div class="sys-table">
-      <el-table :border="true" :data="tableList">
+      <el-table :border="true" :data="tableList" v-loading="tableLoading">
         <el-table-column label="ID" prop="id" width="40px"></el-table-column>
         <el-table-column label="角色名" prop="title" width="200px"></el-table-column>
         <el-table-column label="备注" prop="remark" ></el-table-column>
@@ -42,7 +42,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <table-page :page-info="pageInfo" :page-change="pageChange" :size-change="sizeChange"/>
+    <table-page :page-info="pageInfo" :page-change="pageChange" :size-change="sizeChange" :disabled="tableLoading"/>
     <div class="sys-add">
       <el-dialog :title="optionAdd?'新增':'修改'" :visible.sync="addFormVisible" width="30%">
         <el-form label-width="60px">
@@ -54,8 +54,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="handleCancel">取消</el-button>
-          <el-button type="primary" @click="handleConfirm">确定</el-button>
+          <el-button @click="addDialogCancel">取消</el-button>
+          <el-button type="primary" @click="addDialogConfirm">确定</el-button>
         </div>
       </el-dialog>
     </div>
@@ -64,7 +64,7 @@
 
 <script>
     import {apiRoleAdd, apiRoleUpdate, apiRoleDelete, apiRoleListPage,} from '../../../api/api_role'
-    import {alertSuccessMsg,alertErrorMsg} from '../../../utils/message'
+    import {alertSuccessMsg, alertErrorMsg, notifyError} from '../../../utils/message'
     import {clearObj} from "../../../utils/common";
     import TablePage from "../../../components/TablePage/index";
     import AppToolbar from "../../../components/AppToolbar/index";
@@ -76,6 +76,7 @@
         return{
           optionAdd:false,
           addFormVisible : false,
+          tableLoading:true,
           tableList:[],
           searchVo : {
             id : null,
@@ -104,56 +105,26 @@
         },
       },
       methods:{
-        apiAdd:function(){
-          apiRoleAdd(this.entityVo).then(res=>{
-            alertSuccessMsg("添加成功！");
-            clearObj(this.entityVo);
-            this.listPage();
-          },err=>{
-            alertErrorMsg("添加失败！");
-            console.log("err",err)
-          })
-        },
-        apiUpdate:function(){
-          apiRoleUpdate(this.entityVo).then(res=>{
-            alertSuccessMsg("更新成功！");
-            clearObj(this.entityVo);
-            this.listPage();
-          },err=>{
-            alertErrorMsg("更新失败！");
-            console.log("err",err)
-          })
-        },
-        apiDelete:function(id){
-          apiRoleDelete(id).then(res=>{
-            alertSuccessMsg('删除成功');
-            this.listPage();
-          },err=>{
-            console.log("err",err);
-            alertErrorMsg('删除失败');
-          });
-        },
         listPage:function(){
+          this.tableLoading = true;
           apiRoleListPage(this.queryVo).then(res=>{
             const pageResult = res.data;
             const {list,total} = pageResult;
             this.tableList = list;
             this.pageInfo.total = total;
+            this.tableLoading = false;
           },err=>{
+            notifyError("数据请求出错！");
+            this.tableLoading = false;
             console.log("err",err);
           });
         },
-        onSubmit() {
+        searchSubmit() {
           this.listPage();
         },
-        onClear(){
+        searchClear(){
           clearObj(this.searchVo);
           this.listPage();
-        },
-        handleAdd(){
-          clearObj(this.entityVo);
-          this.optionAdd = true;
-          this.addFormVisible = true;
         },
         handleEdit(row) {
           clearObj(this.entityVo);
@@ -169,20 +140,45 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            this.apiDelete(row.id);
+            apiRoleDelete(row.id).then(res=>{
+              alertSuccessMsg('删除成功');
+              this.listPage();
+            },err=>{
+              console.log("err",err);
+              alertErrorMsg('删除失败');
+            });
           }).catch(()=>{});
         },
-        handleConfirm:function(){
+        addDialogOpen(){
+          clearObj(this.entityVo);
+          this.optionAdd = true;
+          this.addFormVisible = true;
+        },
+        addDialogConfirm:function(){
           if(this.optionAdd){
             if(this.validate()){
-              this.apiAdd();
+              apiRoleAdd(this.entityVo).then(res=>{
+                alertSuccessMsg("添加成功！");
+                clearObj(this.entityVo);
+                this.listPage();
+              },err=>{
+                alertErrorMsg("添加失败！");
+                console.log("err",err)
+              })
             }else {return;}
           }else{
-            this.apiUpdate();
+            apiRoleUpdate(this.entityVo).then(res=>{
+              alertSuccessMsg("更新成功！");
+              clearObj(this.entityVo);
+              this.listPage();
+            },err=>{
+              alertErrorMsg("更新失败！");
+              console.log("err",err)
+            })
           }
           this.addFormVisible = false;
         },
-        handleCancel:function(){
+        addDialogCancel:function(){
           clearObj(this.entityVo);
           this.addFormVisible = false;
         },
