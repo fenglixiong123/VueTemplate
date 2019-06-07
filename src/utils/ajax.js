@@ -59,7 +59,7 @@ service.interceptors.response.use(
         break;
       //用户被禁用
       case 4002:
-        notifyError('☹=>'+res.msg);
+        notifyError('☹=>'+res.data);
         break;
       //暂无权限
       case 4003:
@@ -67,7 +67,7 @@ service.interceptors.response.use(
         break;
       //用户名密码错误
       case 4004:
-        alertErrorMsg('☹=>'+res.msg);
+        notifyError('☹=>'+res.data);
         break;
     }
     return Promise.reject(res)
