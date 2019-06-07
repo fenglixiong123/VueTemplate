@@ -9,16 +9,16 @@
           <el-input v-model="searchVo.nickname" placeholder="昵称"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="searchSubmit">查询</el-button>
-          <el-button type="primary" @click="searchClear">清空</el-button>
+          <el-button type="primary" @click="searchSubmit" :disabled="tableLoading">查询</el-button>
+          <el-button type="primary" @click="searchClear" :disabled="tableLoading">清空</el-button>
         </el-form-item>
       </el-form>
     </app-search>
     <app-toolbar>
-      <el-button type="primary" plain size="mini" @click="addDialogOpen">新增</el-button>
+      <el-button type="primary" plain size="mini" @click="addDialogOpen" :disabled="tableLoading">新增</el-button>
     </app-toolbar>
     <div class="sys-table">
-      <el-table :border="true" :data="tableList">
+      <el-table :border="true" :data="tableList" v-loading="tableLoading">
         <el-table-column label="ID" prop="id" width="40px"></el-table-column>
         <el-table-column label="用户名" prop="username" width="100px"></el-table-column>
         <el-table-column label="昵称" prop="nickname" width="100px"></el-table-column>
@@ -56,7 +56,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <table-page :page-info="pageInfo" :page-change="pageChange" :size-change="sizeChange"/>
+    <table-page :page-info="pageInfo" :page-change="pageChange" :size-change="sizeChange" :disabled="tableLoading"/>
     <div class="sys-add">
       <el-dialog :title="optionAdd?'新增':'修改'" :visible.sync="addFormVisible" width="50%">
         <el-form label-width="60px" :inline="true">
@@ -68,15 +68,16 @@
           </el-form-item>
           <el-form-item label="性别">
             <el-select v-model="entityVo.sex">
-              <el-option label="男" value="1">男</el-option>
-              <el-option label="女" value="0">女</el-option>
+              <el-option v-for="item in sexOptions" :label="item.label" :value="item.value" :key="item.value"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="手机号">
             <el-input v-model="entityVo.phone" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="状态">
-            <el-input v-model="entityVo.status" autocomplete="off"></el-input>
+            <el-select v-model="entityVo.status">
+              <el-option v-for="item in statusOptions" :label="item.label" :value="item.value" :key="item.value"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="邮箱">
             <el-input v-model="entityVo.email" autocomplete="off"></el-input>
@@ -121,7 +122,7 @@
 <script>
   import {apiAdminAdd, apiAdminUpdate, apiAdminDelete, apiAdminListPage,
     apiAdminAssignRole,apiAdminFindPossessRole} from '../../api/api_admin'
-  import {alertSuccessMsg,alertErrorMsg} from '../../utils/message'
+  import {alertSuccessMsg, alertErrorMsg, notifyError} from '../../utils/message'
   import {clearObj} from "../../utils/common";
   import TablePage from "../../components/TablePage/index";
   import AppToolbar from "../../components/AppToolbar/index";
@@ -133,6 +134,7 @@
       return{
         optionAdd:false,
         addFormVisible : false,
+        tableLoading:true,
         tableList:[],
         searchVo : {
           id : null,
@@ -157,6 +159,14 @@
           pageSize : 5,
           pageSizes : [5, 10, 25, 50],
         },
+        sexOptions:[
+          {label:'男', value:1},
+          {label:'女', value:0}
+        ],
+        statusOptions:[
+          {label:'正常', value:1},
+          {label:'禁止', value:0}
+        ],
         currentRowId : null,
         assignRoleFormVisible : false,
         assignRoleDialogLoading : true,
@@ -174,22 +184,17 @@
       },
     },
     methods:{
-      selectParseForSex(){
-        if(this.entityVo.sex){
-          if(this.entityVo.sex === '男'){
-            this.entityVo.sex = 1;
-          } else if(this.entityVo.sex === '女'){
-            this.entityVo.sex = 0;
-          }
-        }
-      },
       listPage:function(){
+        this.tableLoading = true;
         apiAdminListPage(this.queryVo).then(res=>{
           const pageResult = res.data;
           const {list,total} = pageResult;
           this.tableList = list;
           this.pageInfo.total = total;
+          this.tableLoading = false;
         },err=>{
+          notifyError("数据请求出错！");
+          this.tableLoading = false;
           console.log("err",err);
         });
       },
@@ -208,7 +213,7 @@
         this.entityVo.username = row.username;
         this.entityVo.nickname = row.nickname;
         this.entityVo.icon = row.icon;
-        this.entityVo.sex = row.sex ===1?'男':'女';
+        this.entityVo.sex = row.sex;
         this.entityVo.phone = row.phone;
         this.entityVo.email = row.email;
         this.entityVo.address = row.address;
@@ -239,12 +244,12 @@
       },
       addDialogOpen(){
         clearObj(this.entityVo);
-        this.entityVo.sex = '男';
+        this.entityVo.sex = 1;
+        this.entityVo.status = 0;
         this.optionAdd = true;
         this.addFormVisible = true;
       },
       addDialogConfirm:function(){
-        this.selectParseForSex();
         if(this.optionAdd){
           if(this.validate()){
             apiAdminAdd(this.entityVo).then(res=>{

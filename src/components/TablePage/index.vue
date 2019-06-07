@@ -2,6 +2,7 @@
   <div class="sys-table-page">
     <el-pagination
           background
+          :disabled="disabled"
           :layout="layout"
           :current-page="pageInfo.pageNo"
           :page-sizes="pageInfo.pageSizes"
@@ -17,6 +18,7 @@
   export default {
     name: 'TablePage',
     props: {
+      disabled:true,
       pageInfo:{
         type : Object,
         default : function () {
