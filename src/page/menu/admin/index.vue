@@ -1,31 +1,18 @@
 <template>
   <div>
-    <app-search>
-      <el-form :inline="true" class="demo-form-inline" size="mini">
-        <el-form-item label="ID">
-          <el-input v-model="searchVo.id" placeholder="ID"></el-input>
-        </el-form-item>
-        <el-form-item label="菜单">
-          <el-input v-model="searchVo.title" placeholder="菜单"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="searchSubmit" :disabled="tableLoading">查询</el-button>
-          <el-button type="primary" @click="searchClear" :disabled="tableLoading">清空</el-button>
-        </el-form-item>
-      </el-form>
-    </app-search>
     <app-toolbar>
       <el-button type="primary" plain size="mini" @click="addDialogOpen" :disabled="tableLoading">新增</el-button>
     </app-toolbar>
     <div class="sys-table">
-      <el-table :border="true" :data="tableList" v-loading="tableLoading">
-        <el-table-column label="ID" prop="id" width="40px"></el-table-column>
-        <el-table-column label="菜单名" prop="title" width="100px"></el-table-column>
-        <el-table-column label="父级菜单ID" prop="parentId" width="100px"></el-table-column>
+      <el-table border default-expand-all row-key="id" v-loading="tableLoading"
+                :data="tableList" :tree-props="{children: 'children'}" >
+        <el-table-column label="菜单名" prop="title" width="200px"></el-table-column>
+        <el-table-column label="ID" prop="id" width="60px"></el-table-column>
+        <el-table-column label="PID" prop="parentId" width="60px"></el-table-column>
+        <el-table-column label="图标" prop="icon" width="150px"></el-table-column>
         <el-table-column label="路径" prop="path" ></el-table-column>
-        <el-table-column label="图标" prop="icon" width="120px"></el-table-column>
         <el-table-column label="备注" prop="remark" ></el-table-column>
-        <el-table-column label="操作" width="130px">
+        <el-table-column label="操作" width="130px" fixed="right">
           <template slot-scope="scope">
             <el-button icon="el-icon-edit" type="primary" plain size="mini"
                        @click="handleEdit(scope.row)"></el-button>
@@ -35,7 +22,6 @@
         </el-table-column>
       </el-table>
     </div>
-    <table-page :page-info="pageInfo" :page-change="pageChange" :size-change="sizeChange" :disabled="tableLoading"/>
     <div class="sys-add">
       <el-dialog :title="optionAdd?'新增':'修改'" :visible.sync="addFormVisible" width="50%">
         <el-form label-width="60px" :inline="true">
@@ -68,25 +54,19 @@
 </template>
 
 <script>
-  import {apiMenuAdd, apiMenuUpdate, apiMenuDelete, apiMenuListPage,} from '../../../api/api_menu'
+  import {apiMenuAdd, apiMenuUpdate, apiMenuDelete, apiMenuTree,} from '../../../api/api_menu'
   import {alertSuccessMsg, alertErrorMsg, notifyError} from '../../../utils/message'
   import {clearObj} from "../../../utils/common";
-  import TablePage from "../../../components/TablePage/index";
   import AppToolbar from "../../../components/AppToolbar/index";
-  import AppSearch from "../../../components/AppSearch/index";
   export default {
     name: "Menu",
-    components: {AppSearch, AppToolbar, TablePage},
+    components: {AppToolbar},
     data(){
       return{
         optionAdd:false,
         addFormVisible : false,
         tableLoading:true,
         tableList:[],
-        searchVo : {
-          id : null,
-          title : null
-        },
         entityVo : {
           id : null,
           title : null,
@@ -96,44 +76,22 @@
           order : null,
           remark : null
         },
-        pageInfo:{
-          total : 0,
-          pageNo : 1,
-          pageSize : 5,
-          pageSizes : [5, 10, 25, 50],
-        }
       }
     },
     computed:{
-      queryVo:function () {
-        return {
-          page : this.pageInfo.pageNo,
-          pageSize : this.pageInfo.pageSize,
-          entity : this.searchVo
-        };
-      },
+
     },
     methods:{
       listPage:function(){
         this.tableLoading = true;
-        apiMenuListPage(this.queryVo).then(res=>{
-          const pageResult = res.data;
-          const {list,total} = pageResult;
-          this.tableList = list;
-          this.pageInfo.total = total;
+        apiMenuTree().then(res=>{
+          this.tableList = res.data;
           this.tableLoading = false;
         },err=>{
           notifyError("数据请求出错！");
           this.tableLoading = false;
           console.log("err",err);
         });
-      },
-      searchSubmit() {
-        this.listPage();
-      },
-      searchClear(){
-        clearObj(this.searchVo);
-        this.listPage();
       },
       handleEdit(row) {
         clearObj(this.entityVo);
@@ -202,14 +160,6 @@
         }
         return true;
       },
-      sizeChange(val) {
-        this.pageInfo.pageSize = val;
-        this.listPage();
-      },
-      pageChange(val) {
-        this.pageInfo.pageNo = val;
-        this.listPage();
-      }
     },
     mounted() {
       this.listPage();
