@@ -19,14 +19,15 @@ function apiRoleListPage(data) {
 
 function apiRoleGet(id) {
   return service({
-    url: `/adminApi/console/admin/role/${id}`,
+    url: `/adminApi/console/admin/role`,
     method: method.GET,
+    params: { id }
   })
 }
 
 function apiRoleAdd(data) {
   return service({
-    url: '/adminApi/console/admin/role/',
+    url: '/adminApi/console/admin/role',
     method: method.POST,
     data
   })
@@ -34,7 +35,7 @@ function apiRoleAdd(data) {
 
 function apiRoleUpdate(data) {
   return service({
-    url: '/adminApi/console/admin/role/',
+    url: '/adminApi/console/admin/role',
     method: method.PUT,
     data
   })
@@ -42,22 +43,25 @@ function apiRoleUpdate(data) {
 
 function apiRoleDelete(id) {
   return service({
-    url: `/adminApi/console/admin/role/${id}`,
+    url: `/adminApi/console/admin/role`,
     method: method.DELETE,
+    params: { id }
   })
 }
 
 function apiRoleFindPossessMenu(id) {
   return service({
-    url: `/adminApi/console/admin/role/findPossessMenuByRoleId/${id}`,
+    url: `/adminApi/console/admin/role/findPossessMenuByRoleId`,
     method: method.GET,
+    params: { id }
   })
 }
 
 function apiRoleFindPossessPower(id) {
   return service({
-    url: `/adminApi/console/admin/role/findPossessPowerByRoleId/${id}`,
+    url: `/adminApi/console/admin/role/findPossessPowerByRoleId`,
     method: method.GET,
+    params: { id }
   })
 }
 

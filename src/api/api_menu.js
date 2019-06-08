@@ -34,14 +34,15 @@ function apiMenuListPage(data) {
 
 function apiMenuGet(id) {
   return service({
-    url: `/adminApi/console/admin/menu/${id}`,
+    url: `/adminApi/console/admin/menu`,
     method: method.GET,
+    params: { id }
   })
 }
 
 function apiMenuAdd(data) {
   return service({
-    url: '/adminApi/console/admin/menu/',
+    url: '/adminApi/console/admin/menu',
     method: method.POST,
     data
   })
@@ -49,7 +50,7 @@ function apiMenuAdd(data) {
 
 function apiMenuUpdate(data) {
   return service({
-    url: '/adminApi/console/admin/menu/',
+    url: '/adminApi/console/admin/menu',
     method: method.PUT,
     data
   })
@@ -57,8 +58,9 @@ function apiMenuUpdate(data) {
 
 function apiMenuDelete(id) {
   return service({
-    url: `/adminApi/console/admin/menu/${id}`,
+    url: `/adminApi/console/admin/menu`,
     method: method.DELETE,
+    params: { id }
   })
 }
 

@@ -34,14 +34,15 @@ function apiPowerListPage(data) {
 
 function apiPowerGet(id) {
   return service({
-    url: `/adminApi/console/admin/power/${id}`,
+    url: `/adminApi/console/admin/power`,
     method: method.GET,
+    params: { id }
   })
 }
 
 function apiPowerAdd(data) {
   return service({
-    url: '/adminApi/console/admin/power/',
+    url: '/adminApi/console/admin/power',
     method: method.POST,
     data
   })
@@ -49,7 +50,7 @@ function apiPowerAdd(data) {
 
 function apiPowerUpdate(data) {
   return service({
-    url: '/adminApi/console/admin/power/',
+    url: '/adminApi/console/admin/power',
     method: method.PUT,
     data
   })
@@ -57,8 +58,9 @@ function apiPowerUpdate(data) {
 
 function apiPowerDelete(id) {
   return service({
-    url: `/adminApi/console/admin/power/${id}`,
+    url: `/adminApi/console/admin/power`,
     method: method.DELETE,
+    params: { id }
   })
 }
 

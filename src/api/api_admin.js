@@ -11,7 +11,7 @@ function apiAdminListPage(data) {
 
 function apiAdminGet(id) {
   return service({
-    url: '/adminApi/console/admin/',
+    url: '/adminApi/console/admin',
     method: method.GET,
     params: { id }
   })
@@ -19,7 +19,7 @@ function apiAdminGet(id) {
 
 function apiAdminAdd(data) {
   return service({
-    url: '/adminApi/console/admin/',
+    url: '/adminApi/console/admin',
     method: method.POST,
     data
   })
@@ -27,7 +27,7 @@ function apiAdminAdd(data) {
 
 function apiAdminUpdate(data) {
   return service({
-    url: '/adminApi/console/admin/',
+    url: '/adminApi/console/admin',
     method: method.PUT,
     data
   })
@@ -35,15 +35,17 @@ function apiAdminUpdate(data) {
 
 function apiAdminDelete(id) {
   return service({
-    url: `/adminApi/console/admin/${id}`,
+    url: `/adminApi/console/admin`,
     method: method.DELETE,
+    params: { id }
   })
 }
 
 function apiAdminFindPossessRole(id) {
   return service({
-    url: `/adminApi/console/admin/findPossessRoleByAdminId/${id}`,
+    url: `/adminApi/console/admin/findPossessRoleByAdminId`,
     method: method.GET,
+    params: { id }
   })
 }
 

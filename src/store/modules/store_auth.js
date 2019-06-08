@@ -1,8 +1,8 @@
 import {apiLogin,apiLogout,apiUserInfo} from '../../api/api_auth'
 import { getToken, setToken, removeToken } from '../../utils/auth'
 import {getUser,setUser,removeUser} from '../../utils/user'
-import {removeMenu} from '../../utils/menu'
-import {removePowerList} from '../../utils/power'
+import {getMenuList, getMenuTree, removeMenu, setMenuList, setMenuTree} from '../../utils/menu'
+import {toTree} from "../../utils/tree";
 
 /**
  * 这样做原因：
@@ -14,6 +14,8 @@ import {removePowerList} from '../../utils/power'
 const state = {
   token:getToken(),
   userInfo:getUser(),
+  menuList: getMenuList(),
+  menuTree: getMenuTree()
 };
 
 
@@ -23,7 +25,13 @@ const mutations = {
   },
   setUserInfo : (state, userInfo) => {
     state.userInfo = userInfo
-  }
+  },
+  setMenuList: (state, data) => {
+    state.menuList = data
+  },
+  setMenuTree: (state, data) => {
+    state.menuTree = data
+  },
 };
 
 const actions = {
@@ -34,18 +42,27 @@ const actions = {
     return new Promise((resolve, reject) => {
       apiLogin({ username: username, password: password }).then(res => {
         console.log("login res:",res);
-        commit('setToken', res.data);
-        setToken(res.data);
+        const {token,user,menuList} = res.data;
+        let menuTree = toTree(menuList,0);
+        commit('setToken', token);
+        commit('setUserInfo',user);
+        commit("setMenuList", menuList);
+        commit("setMenuTree", menuTree);
+        setToken(token);
+        setUser(user);
+        setMenuList(menuList);
+        setMenuTree(menuTree);
         resolve(res);
       },err=>{
         reject(err);
       })
     })
   },
-  getInfo({ commit, state }) {
+
+  getInfo({commit}) {
     console.log("----->getInfo action");
     return new Promise((resolve, reject) => {
-      apiUserInfo(state.token).then(res => {
+      apiUserInfo().then(res => {
         commit('setUserInfo',res.data);
         setUser(res.data);
         resolve(res);
@@ -55,7 +72,7 @@ const actions = {
     })
   },
 
-  logout({dispatch, commit, state }) {
+  logout({dispatch,state }) {
     console.log("----->logout action");
     return new Promise((resolve, reject) => {
       apiLogout(state.token).then((res) => {
@@ -74,7 +91,6 @@ const actions = {
       removeToken();
       removeUser();
       removeMenu();
-      removePowerList();
       resolve()
     })
   },

@@ -24,7 +24,7 @@
       computed:{
         menuTree(){
           console.log('get menuTree..................');
-          return this.$store.getters['menu/menuTree'];
+          return this.$store.getters.menuTree;
         },
         defActive(){
           return this.$route.path;

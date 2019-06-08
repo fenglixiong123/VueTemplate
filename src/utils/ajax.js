@@ -50,7 +50,7 @@ service.interceptors.response.use(
         break;
       //尚未登录
       case 4001:
-        notifyError('☹=>'+res.msg);
+        notifyError('☹=>'+res.data);
         //将跳转的路由path作为参数，登录成功后跳转到该路由
         router.push({
           path: '/login',
@@ -63,7 +63,7 @@ service.interceptors.response.use(
         break;
       //暂无权限
       case 4003:
-        notifyError('☹=>'+res.msg);
+        notifyError('☹=>'+res.data);
         break;
       //用户名密码错误
       case 4004:

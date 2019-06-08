@@ -64,7 +64,7 @@
     <div class="sys-assign-menu">
       <el-dialog title="分配菜单" :visible.sync="assignMenuDialogVisible" width="40%">
         <el-button style="margin-bottom: 10px" type="primary" size="mini" @click="clearMenuTree">清空</el-button>
-        {{hasMenus}}
+        <!--{{hasMenus}}-->
         <el-tree ref="menuTree" v-loading="assignMenuDialogLoading"
                  :data="allMenus" node-key="id" check-strictly
                  show-checkbox default-expand-all highlight-current
@@ -82,7 +82,7 @@
     <div class="sys-assign-menu">
       <el-dialog title="分配权限" :visible.sync="assignPowerDialogVisible" width="30%">
         <el-button style="margin-bottom: 10px" type="primary" size="mini" @click="clearPowerTree">清空</el-button>
-        {{hasPowers}}
+        <!--{{hasPowers}}-->
         <el-tree ref="powerTree" v-loading="assignPowerDialogLoading"
                  :data="allPowers" node-key="id" check-strictly
                  show-checkbox default-expand-all highlight-current

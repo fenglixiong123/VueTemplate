@@ -9,11 +9,10 @@ function apiLogin(data) {
   })
 }
 
-function apiUserInfo(token) {
+function apiUserInfo() {
   return service({
     url: '/adminApi/console/admin/userInfo',
     method: method.GET,
-    params: { token }
   })
 }
 

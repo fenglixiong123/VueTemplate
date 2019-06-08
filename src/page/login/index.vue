@@ -59,28 +59,18 @@
           });
           this.$store.dispatch('auth/login', this.loginForm)
             .then((res) => {
-              console.log("login success",res.code);
-              console.log("获取用户信息...");
-              this.$store.dispatch('auth/getInfo').then(res=>{
-                if(res.data){
-                  let id = res.data.id;
-                  console.log("获取权限信息...");
-                  this.$store.dispatch('menu/getMenuList',id).then(res=>{
-                    console.log(res.code);
-                    setTimeout(()=>{
-                      this.$message.success("恭喜你，登录成功！");
-                      loading.close();
-                      console.log("跳转主页");
-                      this.$router.replace("/home");
-                    },1000)
-                  });
-                }
-              });
+              console.log("login success", res.code);
+              setTimeout(() => {
+                this.$message.success("恭喜你，登录成功！");
+                loading.close();
+                console.log("跳转主页");
+                this.$router.replace("/home");
+              }, 1000)
+            }).catch((err) => {
+                loading.close();
+                console.log("登录请求出错：",err)
             })
-            .catch((err) => {
-              loading.close();
-              console.log("登录请求出错：",err)
-            })
+
         }
       }
     }

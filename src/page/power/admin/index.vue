@@ -10,7 +10,7 @@
         <el-table-column label="ID" prop="id" width="40px"></el-table-column>
         <el-table-column label="PID" prop="parentId" width="60px"></el-table-column>
         <el-table-column label="方法" prop="method" width="80px"></el-table-column>
-        <el-table-column label="路径" prop="path" ></el-table-column>
+        <el-table-column label="路径" prop="path" width="350px"></el-table-column>
         <el-table-column label="备注" prop="remark" ></el-table-column>
         <el-table-column label="操作" width="130px" fixed="right">
           <template slot-scope="scope">

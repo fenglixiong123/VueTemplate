@@ -6,7 +6,6 @@ import {alertErrorMsg} from '../utils/message'
 import store from '../store'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import {getMenuList} from '../utils/menu'
 
 Vue.use(Router);
 
